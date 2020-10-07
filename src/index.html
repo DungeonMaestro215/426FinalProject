@@ -5,33 +5,12 @@
         <link rel="stylesheet" href="node_modules/bulma/css/bulma.min.css">
         <link rel="stylesheet" href="style.css">
         <title>Tower Defense</title>
-
-        <style>
-            #stage {
-                width: 500px;
-                height: 500px;
-                position: relative;
-            }
-
-            canvas { position: absolute; }
-            #enemies { z-index: 2; }
-            #canvas { z-index: 1; }
-        </style>
     </head>
     <body>
-        <div id="root"></div>
-
         <div id="stage">
             <canvas id="enemies" width="500px" height="500px"></canvas>
             <canvas id="canvas" width="500px" height="500px"></canvas>
         </div>
-
-        <script src="main.js"></script>
-        <script src="tdcontroller.js"></script>
-        <script src="tdmodel.js"></script>
-        <script src="tdview.js"></script>
-        <script src="renderMap.js"></script>
-        <script src="gamelogic.js"></script>
-
+        <script type="module" src="Controller.js"></script>
     </body>
 </html>
