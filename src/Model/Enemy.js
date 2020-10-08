@@ -13,12 +13,12 @@ export default class Enemy {
     }
 
     getVx(path){
-        if(path[this.currentNode][2] === 'u' && path[this.currentNode][2] === 'd') return 0;
+        if(path[this.currentNode][2] === 'u' ||  path[this.currentNode][2] === 'd') return 0;
         return (path[this.currentNode][2] === 'l') ? -1 * this.velocity : this.velocity;
     }
 
     getVy(path){
-        if(path[this.currentNode][2] === 'l' && path[this.currentNode][2] === 'r') return 0;
+        if(path[this.currentNode][2] === 'l' || path[this.currentNode][2] === 'r') return 0;
         return (path[this.currentNode][2] === 'u') ? -1 * this.velocity : this.velocity;
     }
 
