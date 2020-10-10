@@ -2,6 +2,7 @@ export default class Enemy {
     sprite;
     x;
     y;
+    health;
     velocity = 1;
     currentNode = 0;
     size = 20;
@@ -10,6 +11,14 @@ export default class Enemy {
         this.sprite = sprite;
         this.x = startX;
         this.y = startY;
+    }
+
+    handleCollision(){
+        this.health--;
+    }
+
+    getState(){
+        return this.health > 0 ? "alive" : "dead";
     }
 
     getVx(path){

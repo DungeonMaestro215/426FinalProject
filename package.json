@@ -1,0 +1,19 @@
+{
+  "name": "426finalproject",
+  "version": "1.0.0",
+  "description": "Tower defense game for COMP 426",
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DungeonMaestro215/426FinalProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DungeonMaestro215/426FinalProject/issues"
+  },
+  "homepage": "https://github.com/DungeonMaestro215/426FinalProject#readme",
+  "dependencies": {
+    "bulma": "^0.9.1"
+  }
+}

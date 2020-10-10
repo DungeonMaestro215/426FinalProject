@@ -1,6 +1,7 @@
 import KMPEnemy from "./Model/KMPEnemy.js";
 import FirstMap from "./Model/FirstMap.js";
 import Projectile from "./Model/Projectile.js";
+import GameData from "./Model/GameData.js";
 
 //Establish DOM links
 const canvas = document.getElementById('canvas');
@@ -15,6 +16,26 @@ map.onLoad(function(img) {
     ctx.drawImage(img, 0, 0,500,500);
 })
 
+let gameData = new GameData();
+
+document.getElementById("round").innerText = `Round: ${gameData.round}`;
+
+let startRound = async () => {
+    gameData.round++;
+    document.getElementById("round").innerText = `Round: ${gameData.round}`;
+    if(gameData.state === "ACTIVE"){
+        return;
+    }
+    //alert("start");
+    gameData.state = "ACTIVE";
+    raf = window.requestAnimationFrame(draw);
+    await spawn();
+    gameData.state = "PAUSED";
+}
+
+document.getElementById("roundStart").addEventListener('click', startRound);
+
+
 let enemies = [];
 let towers = [];
 let projectiles = [];
@@ -22,12 +43,11 @@ const bullet_v = 10
 
 //spawn an enemy periodically
 const spawn = async () => {
-    for(let i = 0; i < 25; i++){
+    for(let i = 0; i < 225; i++){
         enemies.push(new KMPEnemy(3,50,20));
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        await new Promise(resolve => setTimeout(resolve, 200));
     }
 }
-spawn();
 
 
 //main game animation loop
@@ -36,6 +56,9 @@ function draw(timestamp) {
     //dumb way to make this tower shooting logic happen on a timer
     if(Math.round(timestamp*1000) % 100 > 88) {
         for(let tower of towers){
+            if(enemies.length < 1){
+                break;
+            }
             let min_d = Number.MAX_SAFE_INTEGER;
             let target = enemies[0];
 
@@ -76,11 +99,18 @@ function draw(timestamp) {
     for(const enemy of enemies) {
         enemy.draw(enemy_ctx);
         enemy.move(map.enemyPath)
-        //todo: check for collisions here and probably kill the enemy 😳
-/*        if(projectile.x >= enemy.x && projectile.x <= enemy.x + 20
-            && projectile.y >= enemy.y && projectile.y <= enemy.y + 20){
-            console.log("collision")
-        }*/
+        //todo: projectiles that can't penetrate enemies should be destroyed here
+        for(const projectile of projectiles) {
+            if(projectile.x >= enemy.x && projectile.x <= enemy.x + 20
+                && projectile.y >= enemy.y && projectile.y <= enemy.y + 20){
+                console.log("collision");
+                enemy.handleCollision();
+            }
+        }
+        if(enemy.getState() === "dead"){
+            enemies.splice(enemies.indexOf(enemy),1);
+        }
+
     }
     raf = window.requestAnimationFrame(draw);
 }
@@ -88,13 +118,13 @@ function draw(timestamp) {
 /*
  * start and stop animation when cursor enters/leaves the canvas
  */
-enemy_canvas.addEventListener('mouseover', function(e) {
+/*enemy_canvas.addEventListener('mouseover', function(e) {
     raf = window.requestAnimationFrame(draw);
 });
 
 enemy_canvas.addEventListener('mouseout', function(e) {
     window.cancelAnimationFrame(raf);
-});
+});*/
 
 /*
  * bind clicks on the canvas to creating a tower
