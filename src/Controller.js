@@ -16,6 +16,8 @@ map.onLoad(function(img) {
     ctx.drawImage(img, 0, 0,500,500);
 })
 
+
+
 let gameData = new GameData();
 
 document.getElementById("round").innerText = `Round: ${gameData.round}`;
@@ -54,6 +56,7 @@ const spawn = async () => {
 function draw(timestamp) {
     enemy_ctx.clearRect(0,0, enemy_canvas.width, enemy_canvas.height);
     //dumb way to make this tower shooting logic happen on a timer
+    //TODO: create a good timing mechanism to control tower attack speed
     if(Math.round(timestamp*1000) % 100 > 88) {
         for(let tower of towers){
             if(enemies.length < 1){
@@ -95,12 +98,11 @@ function draw(timestamp) {
         projectile.draw(enemy_ctx);
     }
 
-    // move and draw every enemy
+    // Check every enemy against every projectile for collisions
+    // Handle collisions and then draw enemies
     for(const enemy of enemies) {
-        enemy.draw(enemy_ctx);
-        enemy.move(map.enemyPath)
-        //todo: projectiles that can't penetrate enemies should be destroyed here
         for(const projectile of projectiles) {
+            //todo: projectiles that can't penetrate enemies should be destroyed here
             if(projectile.x >= enemy.x && projectile.x <= enemy.x + 20
                 && projectile.y >= enemy.y && projectile.y <= enemy.y + 20){
                 console.log("collision");
@@ -109,41 +111,40 @@ function draw(timestamp) {
         }
         if(enemy.getState() === "dead"){
             enemies.splice(enemies.indexOf(enemy),1);
+        } else {
+            enemy.draw(enemy_ctx);
+            enemy.move(map.enemyPath)
         }
-
     }
     raf = window.requestAnimationFrame(draw);
 }
 
-/*
- * start and stop animation when cursor enters/leaves the canvas
- */
-/*enemy_canvas.addEventListener('mouseover', function(e) {
-    raf = window.requestAnimationFrame(draw);
-});
+//"Add Tower" button logic
+let placingTower = false;
+const toggleTowerPlacement = () => {
+    if(!(placingTower = !placingTower)) {
+        enemy_canvas.removeEventListener('mousedown', renderTowerFromMouseEvent);
+    } else {
+        enemy_canvas.addEventListener('mousedown', renderTowerFromMouseEvent);
+    }
+}
+document.getElementById('addTower').addEventListener('click', toggleTowerPlacement);
 
-enemy_canvas.addEventListener('mouseout', function(e) {
-    window.cancelAnimationFrame(raf);
-});*/
-
-/*
- * bind clicks on the canvas to creating a tower
- */
-enemy_canvas.addEventListener('mousedown', function(e) {
-    renderTower(...getCursorPosition(canvas, e));
-})
 
 /*
- * render a tower image on the canvas at given coordinates
+ * render a tower image on the canvas from the location given by a mouse event
  * towers are rendered on the background canvas behind the enemies
  */
-const renderTower = (x,y) => {
+const renderTowerFromMouseEvent = (e) => {
+    let [x,y] = getCursorPosition(canvas, e);
     towers.push({x:x,y:y})
-    let img = new Image();   // Create new img element
+
+    // render tower
+    let img = new Image();
     img.addEventListener('load', function() {
         ctx.drawImage(img, x, y,55,55);
     }, false);
-    img.src = "./images/tower.png"; // Set source path
+    img.src = "./images/tower.png";
 }
 
 /*
@@ -154,7 +155,6 @@ function getCursorPosition(canvas, event) {
     const rect = canvas.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
-    console.log("x: " + x + " y: " + y)
     return [x,y];
 }
 
