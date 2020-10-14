@@ -37,15 +37,18 @@
     </div>
 </nav>
 
-
+<div class="flex-container">
 <div id="stage">
     <canvas id="enemies" width="500px" height="500px"></canvas>
+    <canvas id="foreground" width="500px" height="500px"></canvas>
     <canvas id="canvas" width="500px" height="500px"></canvas>
 </div>
 <div id="control" style="margin-top: 10px; margin-left: 5px;">
     <span id="round">Round: </span>
     <button class="button" id="roundStart">Start round</button>
     <button class="button" id="addTower">Add tower</button>
+    <span id="lives">Lives: </span>
+</div>
 </div>
 <script type="module" src="src/Controller.js"></script>
 </body>

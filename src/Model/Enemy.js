@@ -3,9 +3,10 @@ export default class Enemy {
     x;
     y;
     health;
-    velocity = 1;
+    velocity = 2.4;
     currentNode = 0;
     size = 20;
+    endCallbacks = [];
 
     constructor(sprite, startX,startY) {
         this.sprite = sprite;
@@ -15,6 +16,10 @@ export default class Enemy {
 
     handleCollision(){
         this.health--;
+    }
+
+    addEndCallback(f){
+        this.endCallbacks.push(f);
     }
 
     getState(){
@@ -38,6 +43,9 @@ export default class Enemy {
     move(path){
         //stop if there is no next node
         if(this.currentNode >= path.length - 1){
+            for(const f of this.endCallbacks) {
+                f(this);
+            }
             return;
         }
 

@@ -2,12 +2,14 @@ import KMPEnemy from "./Model/KMPEnemy.js";
 import FirstMap from "./Model/FirstMap.js";
 import Projectile from "./Model/Projectile.js";
 import GameData from "./Model/GameData.js";
+import {initiateLossScreen} from "./Screens.js";
 
 //Establish DOM links
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const enemy_canvas = document.getElementById('enemies');
 const enemy_ctx = enemy_canvas.getContext('2d');
+const foreground = document.getElementById('foreground');
 let raf;
 
 //Create map object and load image to the canvas
@@ -16,23 +18,27 @@ map.onLoad(function(img) {
     ctx.drawImage(img, 0, 0,500,500);
 })
 
-
-
 let gameData = new GameData();
 
+
+
+
 document.getElementById("round").innerText = `Round: ${gameData.round}`;
+document.getElementById("lives").innerText = `Lives: ${gameData.health}`;
 
 let startRound = async () => {
-    gameData.round++;
     document.getElementById("round").innerText = `Round: ${gameData.round}`;
     if(gameData.state === "ACTIVE"){
         return;
     }
+    gameData.round++;
     //alert("start");
     gameData.state = "ACTIVE";
     raf = window.requestAnimationFrame(draw);
     await spawn();
-    gameData.state = "PAUSED";
+    if(gameData.state === "ACTIVE") {
+        gameData.state = "PAUSED";
+    }
 }
 
 document.getElementById("roundStart").addEventListener('click', startRound);
@@ -43,10 +49,23 @@ let towers = [];
 let projectiles = [];
 const bullet_v = 10
 
+const enemyReachedEndHandler = (enemy) => {
+    enemies.splice(enemies.findIndex(x => x === enemy),1);
+    if(!gameData.health--){
+        gameData.state = "LOST";
+        initiateLossScreen(foreground);
+    } else {
+        document.getElementById("lives").innerText = `Lives: ${gameData.health}`;
+    }
+    console.log(gameData.health);
+}
+
+
 //spawn an enemy periodically
 const spawn = async () => {
-    for(let i = 0; i < 225; i++){
-        enemies.push(new KMPEnemy(3,50,20));
+    for(let i = 0; i < gameData.round*5+8; i++){
+        if(gameData.state==="LOST") return;
+        enemies.push(new KMPEnemy(3,50,enemyReachedEndHandler));
         await new Promise(resolve => setTimeout(resolve, 200));
     }
 }
