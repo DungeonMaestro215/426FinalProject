@@ -3,5 +3,8 @@ export default class GameData {
         this.round=0;
         this.state="PAUSED";
         this.health=20;
+        this.elapsedTime = 0;
+        this.enemiesSpawned = 0;
+        this.maxEnemies = 0;
     }
 }

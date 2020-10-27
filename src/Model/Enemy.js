@@ -3,7 +3,7 @@ export default class Enemy {
     x;
     y;
     health;
-    velocity = 2.4;
+    velocity = 3;
     currentNode = 0;
     size = 20;
     endCallbacks = [];
