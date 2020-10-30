@@ -1,56 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="node_modules/bulma/css/bulma.min.css">
-    <link rel="stylesheet" href="style.css">
-    <title>Tower Defense</title>
-</head>
-<body>
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <p class="navbar-item">
-            UNC Tower Defense
-        </p>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="node_modules/bulma/css/bulma.min.css" />
+        <link rel="stylesheet" href="style.css" />
+        <title>Tower Defense</title>
+    </head>
+    <body>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <p class="navbar-item">UNC Tower Defense</p>
 
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-           data-target="navt">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-        </a>
-    </div>
+                <a
+                    role="button"
+                    class="navbar-burger burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    data-target="navt"
+                >
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
 
-    <div id="navt" class="navbar-menu">
-        <div class="navbar-end">
-            <div class="navbar-item">
-                <div class="buttons">
-                    <a class="button is-primary">
-                        <strong>Sign up</strong>
-                    </a>
-                    <a class="button is-light">
-                        Log in
-                    </a>
+            <div id="navt" class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-light"> Log in </a>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </nav>
+
+        <div class="flex-container">
+            <div id="stage">
+                <canvas id="enemies" width="500px" height="500px"></canvas>
+                <canvas id="foreground" width="500px" height="500px"></canvas>
+                <canvas id="canvas" width="500px" height="500px"></canvas>
+            </div>
+            <div id="control" style="margin-top: 10px; margin-left: 5px">
+                <span id="round">Round: </span>
+                <button class="button" id="roundStart">Start round</button>
+                <button class="button" id="addTower">Add tower</button>
+                <span id="lives">Lives: </span>
+                <span id="money">Money: </span>
+            </div>
         </div>
-    </div>
-</nav>
-
-<div class="flex-container">
-<div id="stage">
-    <canvas id="enemies" width="500px" height="500px"></canvas>
-    <canvas id="foreground" width="500px" height="500px"></canvas>
-    <canvas id="canvas" width="500px" height="500px"></canvas>
-</div>
-<div id="control" style="margin-top: 10px; margin-left: 5px;">
-    <span id="round">Round: </span>
-    <button class="button" id="roundStart">Start round</button>
-    <button class="button" id="addTower">Add tower</button>
-    <span id="lives">Lives: </span>
-</div>
-</div>
-<script type="module" src="src/Main.js"></script>g
-
-</body>
+        <script type="module" src="src/Main.js"></script>
+    </body>
 </html>
