@@ -20,6 +20,7 @@ export default class Controller {
         this.projectiles = [];
         this.view.setLives(this.gameData.health);
         this.view.setRound(this.gameData.round);
+        this.view.setCash(this.gameData.cash);
     }
 
     async startRound() {

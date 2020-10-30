@@ -28,6 +28,10 @@ export default class View {
         document.getElementById("lives").innerText = `Lives: ${lives}`;
     }
 
+    setCash(cash) {
+        document.getElementById("cash").innerText = `Cash: ${cash}`;
+    }
+
     toggleDraw(){
 
     }

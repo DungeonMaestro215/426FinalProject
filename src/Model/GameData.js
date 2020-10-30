@@ -6,5 +6,6 @@ export default class GameData {
         this.elapsedTime = 0;
         this.enemiesSpawned = 0;
         this.maxEnemies = 0;
+        this.cash = 0;
     }
 }
