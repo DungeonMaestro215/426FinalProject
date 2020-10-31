@@ -1,4 +1,6 @@
 import FirstMap from "./Model/FirstMap.js";
+import AnimeGirlTower from "./Model/AnimeGirlTower.js";
+import MortyTower from "./Model/MortyTower.js"
 
 export default class View {
     canvas = document.getElementById("canvas");
@@ -78,14 +80,25 @@ export default class View {
      * towers are rendered on the background canvas behind the enemies
      */
     renderTowerFromMouseEvent = (e) => {
+        // Tower costs 50
         if (this.controller.gameData.money < 50) {
             return;
         }
 
+        // Manage monies
         this.controller.gameData.money -= 50;
         this.setMoney(this.controller.gameData.money);
+
+        // Generate new tower
         let [x, y] = getCursorPosition(this.canvas, e);
-        this.controller.towers.push({ x: x, y: y });
+
+        // *** ALTERNATE BETWEEN TOWERS ***
+        let tower = new AnimeGirlTower(x, y);
+        if (this.controller.towers[this.controller.towers.length - 1] instanceof AnimeGirlTower) {
+            tower = new MortyTower(x, y);
+        }
+        this.controller.towers.push(tower);
+
         // render tower
         let img = new Image();
         img.addEventListener(
@@ -95,7 +108,7 @@ export default class View {
             },
             false
         );
-        img.src = "./images/tower.png";
+        img.src = tower.sprite;
     };
 
     initiateLossScreen() {

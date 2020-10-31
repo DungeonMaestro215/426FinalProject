@@ -3,8 +3,6 @@ import Projectile from "./Model/Projectile.js";
 import GameData from "./Model/GameData.js";
 import KrisEnemy from "./Model/KrisEnemy.js";
 
-const bullet_v = 10;
-
 export default class Controller {
     view;
     gameData;
@@ -114,6 +112,11 @@ export default class Controller {
         }
     }
 
+    /* Controller tells each tower which enemy it will
+     * fire at. The tower is then responsible for creating
+     * projectiles. This allows for different towers
+     * to do different things... maybe
+     */
     fireTowers() {
         for (let tower of this.towers) {
             if (this.enemies.length < 1) {
@@ -122,41 +125,29 @@ export default class Controller {
             let min_d = Number.MAX_SAFE_INTEGER;
             let target = this.enemies[0];
 
-            //Select closest enemy
-            for (let enemy of this.enemies) {
+            // Which enemy should the tower shoot at?
+            if (tower.targetType == "first") {
+                // Select first (or farthest) enemy
+                let enemy = this.enemies[0];
+                target = enemy;
                 let dx = enemy.x - tower.x;
                 let dy = enemy.y - tower.y;
-                let d = Math.sqrt(dx ** 2 + dy ** 2);
-                if (d < min_d) {
-                    min_d = d;
-                    target = enemy;
+                min_d = Math.sqrt(dx ** 2 + dy ** 2);
+            } else if (tower.targetType == "closest") {
+                // Select closest enemy
+                for (let enemy of this.enemies) {
+                    let dx = enemy.x - tower.x;
+                    let dy = enemy.y - tower.y;
+                    let d = Math.sqrt(dx ** 2 + dy ** 2);
+                    if (d < min_d) {
+                        min_d = d;
+                        target = enemy;
+                    }
                 }
-            }
+            } 
 
-            //predict where the target is gonna be when the projectile gets there
-            let adx =
-                target.x +
-                target.getVx(this.view.map.enemyPath) *
-                    1.33 *
-                    (min_d / bullet_v) -
-                tower.x;
-            let ady =
-                target.y +
-                target.getVy(this.view.map.enemyPath) *
-                    1.33 *
-                    (min_d / bullet_v) -
-                tower.y;
-            let atan = Math.atan(ady / adx);
-
-            //shoot projectile
-            this.projectiles.push(
-                new Projectile(
-                    tower.x,
-                    tower.y,
-                    bullet_v * Math.cos(atan) * Math.sign(adx),
-                    bullet_v * Math.sin(atan) * Math.sign(adx)
-                )
-            );
+            // Tell this tower to fire
+            this.projectiles.push(tower.fire(target, min_d, this.view.map.enemyPath));
         }
     }
 
