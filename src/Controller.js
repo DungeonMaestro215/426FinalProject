@@ -97,6 +97,8 @@ export default class Controller {
             }
             if (enemy.getState() === "dead") {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
+                this.gameData.money += enemy.getReward();
+                this.view.setMoney(this.gameData.money);
             } else {
                 enemy.move(this.view.map.enemyPath);
             }

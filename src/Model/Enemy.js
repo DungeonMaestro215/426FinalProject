@@ -7,6 +7,7 @@ export default class Enemy {
     currentNode = 0;
     size = 20;
     endCallbacks = [];
+    reward = 5;
 
     constructor(sprite, startX,startY) {
         this.sprite = sprite;
@@ -34,6 +35,10 @@ export default class Enemy {
     getVy(path){
         if(path[this.currentNode][2] === 'l' || path[this.currentNode][2] === 'r') return 0;
         return (path[this.currentNode][2] === 'u') ? -1 * this.velocity : this.velocity;
+    }
+
+    getReward() {
+        return this.reward;
     }
 
     draw(context) {

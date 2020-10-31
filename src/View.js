@@ -78,12 +78,12 @@ export default class View {
      * towers are rendered on the background canvas behind the enemies
      */
     renderTowerFromMouseEvent = (e) => {
-        if (this.controller.gameData.money >= 50) {
-            this.controller.gameData.money -= 50;
-            this.setMoney(this.controller.gameData.money);
-        } else {
+        if (this.controller.gameData.money < 50) {
             return;
         }
+
+        this.controller.gameData.money -= 50;
+        this.setMoney(this.controller.gameData.money);
         let [x, y] = getCursorPosition(this.canvas, e);
         this.controller.towers.push({ x: x, y: y });
         // render tower
