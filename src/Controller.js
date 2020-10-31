@@ -68,7 +68,9 @@ export default class Controller {
 
         if (this.gameData.elapsedTime % 9 === 0) {
             //cause each tower to fire 1 shot at nearest enemy
-            this.fireTowers();
+            for (let tower of this.towers) {
+                this.projectiles.push(tower.createProjectile(this.enemies, this.view.map.enemyPath));
+            }
         }
 
         // move every projectile
@@ -109,45 +111,6 @@ export default class Controller {
             await new Promise((resolve) => setTimeout(resolve, 32));
             this.gameData.elapsedTime++;
             return this.updateGame();
-        }
-    }
-
-    /* Controller tells each tower which enemy it will
-     * fire at. The tower is then responsible for creating
-     * projectiles. This allows for different towers
-     * to do different things... maybe
-     */
-    fireTowers() {
-        for (let tower of this.towers) {
-            if (this.enemies.length < 1) {
-                break;
-            }
-            let min_d = Number.MAX_SAFE_INTEGER;
-            let target = this.enemies[0];
-
-            // Which enemy should the tower shoot at?
-            if (tower.targetType == "first") {
-                // Select first (or farthest) enemy
-                let enemy = this.enemies[0];
-                target = enemy;
-                let dx = enemy.x - tower.x;
-                let dy = enemy.y - tower.y;
-                min_d = Math.sqrt(dx ** 2 + dy ** 2);
-            } else if (tower.targetType == "closest") {
-                // Select closest enemy
-                for (let enemy of this.enemies) {
-                    let dx = enemy.x - tower.x;
-                    let dy = enemy.y - tower.y;
-                    let d = Math.sqrt(dx ** 2 + dy ** 2);
-                    if (d < min_d) {
-                        min_d = d;
-                        target = enemy;
-                    }
-                }
-            } 
-
-            // Tell this tower to fire
-            this.projectiles.push(tower.fire(target, min_d, this.view.map.enemyPath));
         }
     }
 
