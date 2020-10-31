@@ -15,6 +15,7 @@ export default class Tower {
         this.targetType = targetType;
     }
 
+    // Default fire method
     fire(target, min_d, enemyPath) {
         //predict where the target is gonna be when the projectile gets there
         let adx =
