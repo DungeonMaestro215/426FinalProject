@@ -1,5 +1,4 @@
 import KMPEnemy from "./Model/KMPEnemy.js";
-import Projectile from "./Model/Projectile.js";
 import GameData from "./Model/GameData.js";
 import KrisEnemy from "./Model/KrisEnemy.js";
 
@@ -125,6 +124,5 @@ export default class Controller {
         } else {
             this.view.setLives(this.gameData.health);
         }
-        console.log(this.gameData.health);
     }
 }

@@ -48,13 +48,13 @@ export default class Tower {
         let adx =
             target.x +
             target.getVx(enemyPath) *
-            1.33 *
+            1.11 *
             (min_d / this.bullet_v) -
             this.x;
         let ady =
             target.y +
             target.getVy(enemyPath) *
-            1.33 *
+            1.11 *
             (min_d / this.bullet_v) -
             this.y;
         let atan = Math.atan(ady / adx);

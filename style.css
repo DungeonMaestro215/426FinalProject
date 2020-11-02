@@ -10,6 +10,12 @@
     align-items: center;
 }
 
+.game-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 
 .row {
     float: left;
@@ -20,6 +26,11 @@
 #stage {
     width: 500px;
     height: 500px;
+}
+
+.towerSidebar {
+    width: 140px;
+    padding: 14px;
 }
 
 canvas { position: absolute; }

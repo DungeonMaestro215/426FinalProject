@@ -20,9 +20,14 @@ export default class View {
         this.drawing = false;
         this.enemy_ctx = this.enemy_canvas.getContext("2d");
         this.ctx = this.canvas.getContext("2d");
-        document
-            .getElementById("addTower")
-            .addEventListener("click", this.toggleTowerPlacement.bind(this));
+        //Create buttons in the UI for each type of tower
+        let towerTypes = [new AnimeGirlTower(), new MortyTower()];
+        for(const towerType of towerTypes){
+            document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
+                `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" src="${towerType.sprite}"/></div>`
+            );
+            document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
+        }
     }
 
     setRound(round) {
@@ -61,16 +66,28 @@ export default class View {
 
     //"Add Tower" button logic
     placingTower = false;
-    toggleTowerPlacement() {
+    selectedTowerImage;
+    //store click and mouse move listeners so they can be removed
+    listener;
+    guideListener;
+    toggleTowerPlacement(tower) {
+        //store selected tower image to assist drawing tower on mouse location
+        this.selectedTowerImage = new Image();
+        this.selectedTowerImage.src = tower.sprite;
+        //add and remove event listeners
         if (!(this.placingTower = !this.placingTower)) {
             this.enemy_canvas.removeEventListener(
                 "mousedown",
-                this.renderTowerFromMouseEvent
+                this.listener,
             );
+            window.removeEventListener("mousemove",
+                this.guideListener);
         } else {
+            window.addEventListener("mousemove",
+                this.guideListener = e => this.renderTowerPlacementGuide(e,tower));
             this.enemy_canvas.addEventListener(
                 "mousedown",
-                this.renderTowerFromMouseEvent
+                this.listener  = (e) => this.renderTowerFromMouseEvent(e,tower)
             );
         }
     }
@@ -79,7 +96,7 @@ export default class View {
      * render a tower image on the canvas from the location given by a mouse event
      * towers are rendered on the background canvas behind the enemies
      */
-    renderTowerFromMouseEvent = (e) => {
+    renderTowerFromMouseEvent = (e, tower) => {
         // Tower costs 50
         if (this.controller.gameData.money < 50) {
             return;
@@ -92,11 +109,9 @@ export default class View {
         // Generate new tower
         let [x, y] = getCursorPosition(this.canvas, e);
 
-        // *** ALTERNATE BETWEEN TOWERS ***
-        let tower = new AnimeGirlTower(x, y);
-        if (this.controller.towers[this.controller.towers.length - 1] instanceof AnimeGirlTower) {
-            tower = new MortyTower(x, y);
-        }
+        tower = new tower.constructor;
+        tower.x = x;
+        tower.y = y;
         this.controller.towers.push(tower);
 
         // render tower
@@ -109,7 +124,25 @@ export default class View {
             false
         );
         img.src = tower.sprite;
+        //end tower placement state when tower has been placed
+        this.toggleTowerPlacement(tower);
     };
+
+    /*
+     * just render the sprite of a tower at an event mouse location
+     * to indicate the user is in tower placing state
+     */
+    renderTowerPlacementGuide = (e) => {
+        this.enemy_ctx.clearRect(
+            0,
+            0,
+            this.enemy_canvas.width,
+            this.enemy_canvas.height
+        );
+        let [x, y] = getCursorPosition(this.canvas, e);
+        this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, 55, 55);
+    };
+
 
     initiateLossScreen() {
         const foreground_ctx = this.foreground.getContext("2d");
