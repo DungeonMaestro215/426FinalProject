@@ -103,12 +103,20 @@ export default class View {
             return;
         }
 
+        // Get cursor position
+        let [x, y] = getCursorPosition(this.canvas, e);
+
+        // Can the tower be placed here?
+        if (this.isTowerPlacementGuideBlocked(x, y)) {
+            // If it is blocked, do nothing
+            return;
+        }
+
         // Manage monies
         this.controller.gameData.money -= 50;
         this.setMoney(this.controller.gameData.money);
 
         // Generate new tower
-        let [x, y] = getCursorPosition(this.canvas, e);
 
         tower = new tower.constructor;
         tower.x = x;
@@ -144,8 +152,29 @@ export default class View {
         );
         let [x, y] = getCursorPosition(this.canvas, e);
 
-        // Is there a tower or the track in the way?
-        const isBlocked = this.controller.towers.reduce((acc, tower) => {
+        // // Is there a tower or the track in the way?
+        // const isBlocked = this.controller.towers.reduce((acc, tower) => {
+        //     if (
+        //         x > tower.x + tower.size ||
+        //         x + this.selectedTowerImage.size < tower.x ||
+        //         y > tower.y + tower.size ||
+        //         y + this.selectedTowerImage.size < tower.y
+        //     ) {
+        //         return acc || false;
+        //     } else {
+        //         return true;
+        //     }
+        // }, false);
+
+        const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
+
+        this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
+        this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+    };
+
+    isTowerPlacementGuideBlocked(x, y) {
+        return this.controller.towers.reduce((acc, tower) => {
             if (
                 x > tower.x + tower.size ||
                 x + this.selectedTowerImage.size < tower.x ||
@@ -157,12 +186,7 @@ export default class View {
                 return true;
             }
         }, false);
-
-        this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
-        this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
-        this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
-    };
-
+    }
 
     initiateLossScreen() {
         const foreground_ctx = this.foreground.getContext("2d");
