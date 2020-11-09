@@ -12,6 +12,7 @@ export default class Projectile {
     }
 
     draw = (ctx) =>  {
+        ctx.fillStyle = 'rgba(0, 0, 0, 1)';
         ctx.fillRect(this.x, this.y, 5, 5);
     }
 

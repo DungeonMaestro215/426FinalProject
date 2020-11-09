@@ -87,9 +87,9 @@ export default class Controller {
                 //todo: projectiles that can't penetrate enemies should be destroyed here
                 if (
                     projectile.x >= enemy.x &&
-                    projectile.x <= enemy.x + 20 &&
+                    projectile.x <= enemy.x + enemy.size &&
                     projectile.y >= enemy.y &&
-                    projectile.y <= enemy.y + 20
+                    projectile.y <= enemy.y + enemy.size
                 ) {
                     enemy.handleCollision();
                 }

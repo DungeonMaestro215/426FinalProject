@@ -74,6 +74,7 @@ export default class View {
         //store selected tower image to assist drawing tower on mouse location
         this.selectedTowerImage = new Image();
         this.selectedTowerImage.src = tower.sprite;
+        this.selectedTowerImage.size = tower.size;
         //add and remove event listeners
         if (!(this.placingTower = !this.placingTower)) {
             this.enemy_canvas.removeEventListener(
@@ -119,7 +120,9 @@ export default class View {
         img.addEventListener(
             "load",
             () => {
-                this.ctx.drawImage(img, x, y, 55, 55);
+                this.ctx.drawImage(img, x, y, tower.size, tower.size);
+                // Clear tower placement guide box
+                this.enemy_ctx.clearRect(x, y, tower.size, tower.size);
             },
             false
         );
@@ -140,7 +143,24 @@ export default class View {
             this.enemy_canvas.height
         );
         let [x, y] = getCursorPosition(this.canvas, e);
-        this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, 55, 55);
+
+        // Is there a tower or the track in the way?
+        const isBlocked = this.controller.towers.reduce((acc, tower) => {
+            if (
+                x > tower.x + tower.size ||
+                x + this.selectedTowerImage.size < tower.x ||
+                y > tower.y + tower.size ||
+                y + this.selectedTowerImage.size < tower.y
+            ) {
+                return acc || false;
+            } else {
+                return true;
+            }
+        }, false);
+
+        this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
+        this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
     };
 
 

@@ -4,6 +4,7 @@ import Projectile from "./Projectile.js";
 
 export default class Tower {
     sprite;
+    size = 55;
     x;
     y;
     targetType;
