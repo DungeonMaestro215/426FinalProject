@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>UNC Tower Defense - Register</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
+    </head>
+    <body>
+        <form onsubmit="return register()" action="#">
+            <input id="username" />
+            <input id="password" />
+            <button type="submit" >Submit</button>
+        </form>
+    </body>
+    <script>
+        async function register() {
+            console.log(document.getElementById("username").value, document.getElementById("password").value)
+            const re = await axios({
+                method: 'post',
+                url: 'http://192.168.1.10:8080/registerAccount',
+                data: {
+                    username:document.getElementById("username").value,
+                    password:document.getElementById("password").value 
+                }
+            });
+            console.log(re);
+            return false;
+        }
+    </script>
+</html>
