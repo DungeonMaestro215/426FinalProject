@@ -16,7 +16,7 @@ export default class Enemy {
     }
 
     handleCollision(){
-        this.health--;
+        this.health-=2;
     }
 
     addEndCallback(f){

@@ -58,7 +58,7 @@ export default class View {
             this.enemy_canvas.height
         );
         for (let i = 0; i < this.controller.projectiles.length; i++) {
-            if(this.controller.projectiles[i] == undefined) {continue};
+            if(this.controller.projectiles[i] == undefined) {continue}
             this.controller.projectiles[i].draw(this.enemy_ctx);
         }
         for (let i = 0; i < this.controller.enemies.length; i++) {
@@ -213,7 +213,7 @@ export default class View {
         }
 
         return off_screen || blocked_by_tower || blocked_by_track;
-    };
+    }
 
     // Line intersecting a line 
     // code adapted from: http://www.jeffreythompson.org/collision-detection/line-rect.php
