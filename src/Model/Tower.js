@@ -9,6 +9,7 @@ export default class Tower {
     y;
     targetType;
     bullet_v = 10;
+    range = 200;
 
     constructor(sprite, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
@@ -21,13 +22,13 @@ export default class Tower {
     //logic tower uses to choose which enemy to shoot at
     selectTarget(enemies) {
         let min_d = Number.MAX_SAFE_INTEGER;
-        let target = enemies[0];
+        let target;
 
         for (let enemy of enemies) {
             let dx = enemy.x - this.x;
             let dy = enemy.y - this.y;
             let d = Math.sqrt(dx ** 2 + dy ** 2);
-            if (d < min_d) {
+            if (d < min_d && d < this.range) {
                 min_d = d;
                 target = enemy;
             }
@@ -44,6 +45,9 @@ export default class Tower {
 
         // Which enemy should the tower shoot at?
         const [target, min_d] = this.selectTarget(enemies);
+        if (target == undefined) {
+            return;
+        }
 
         //predict where the target is gonna be when the projectile gets there
         let adx =

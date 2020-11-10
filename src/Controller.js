@@ -71,21 +71,22 @@ export default class Controller {
         if (this.gameData.elapsedTime % 9 === 0) {
             //cause each tower to fire 1 shot at nearest enemy
             for (let tower of this.towers) {
-                this.projectiles.push(tower.createProjectile(this.enemies, this.view.map.enemyPath));
+                const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
+                if (projectile != undefined) {
+                    this.projectiles.push(projectile);
+                }
             }
         }
 
         // move every projectile
-        // todo: remove projectiles from the array that go beyond the canvas bounds so they don't keep taking up wam
-        for (let i = 0; i < this.projectiles.length; i++) {
-            let projectile = this.projectiles[i];
-            if(projectile == undefined) {
-                this.projectiles.splice(i, 1);
-                continue;
-            }
-            projectile.x += projectile.vx;
-            projectile.y += projectile.vy;
-        }
+        this.projectiles.forEach(projectile => projectile.move());
+        // Get rid of projectiles which go off screen
+        this.projectiles = this.projectiles.filter(projectile => {
+            return projectile.x > 0 &&
+                projectile.x < this.view.canvas.width &&
+                projectile.y > 0 &&
+                projectile.y < this.view.canvas.height;
+        });
 
         // Check every enemy against every projectile for collisions
         // Handle collisions and then draw enemies
@@ -100,6 +101,7 @@ export default class Controller {
                     projectile.y <= enemy.y + enemy.size
                 ) {
                     enemy.handleCollision();
+                    projectile.has_collided = true;
                 }
             }
             if (enemy.getState() === "dead") {
@@ -110,6 +112,9 @@ export default class Controller {
                 enemy.move(this.view.map.enemyPath);
             }
         }
+
+        // Remove projectiles which need to be removed
+        this.projectiles = this.projectiles.filter(projectile => !projectile.has_collided);
 
         if (
             this.enemies.length > 0 ||

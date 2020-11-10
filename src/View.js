@@ -73,9 +73,11 @@ export default class View {
     guideListener;
     toggleTowerPlacement(tower) {
         //store selected tower image to assist drawing tower on mouse location
+        // Also store info about selected tower to aid the placement guide
         this.selectedTowerImage = new Image();
         this.selectedTowerImage.src = tower.sprite;
         this.selectedTowerImage.size = tower.size;
+        this.selectedTowerImage.range = tower.range;
         //add and remove event listeners
         if (!(this.placingTower = !this.placingTower)) {
             this.enemy_canvas.removeEventListener(
@@ -99,6 +101,9 @@ export default class View {
      * towers are rendered on the background canvas behind the enemies
      */
     renderTowerFromMouseEvent = (e, tower) => {
+        // Prevent clicking from highlighing anything on page
+        e.preventDefault();
+
         // Tower costs 50
         if (this.controller.gameData.money < 50) {
             return;
@@ -131,7 +136,8 @@ export default class View {
             () => {
                 this.ctx.drawImage(img, x, y, tower.size, tower.size);
                 // Clear tower placement guide box
-                this.enemy_ctx.clearRect(x, y, tower.size, tower.size);
+                // this.enemy_ctx.clearRect(x, y, tower.size, tower.size);
+                this.enemy_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
             false
         );
@@ -153,29 +159,23 @@ export default class View {
         );
         let [x, y] = getCursorPosition(this.canvas, e);
 
-        // // Is there a tower or the track in the way?
-        // const isBlocked = this.controller.towers.reduce((acc, tower) => {
-        //     if (
-        //         x > tower.x + tower.size ||
-        //         x + this.selectedTowerImage.size < tower.x ||
-        //         y > tower.y + tower.size ||
-        //         y + this.selectedTowerImage.size < tower.y
-        //     ) {
-        //         return acc || false;
-        //     } else {
-        //         return true;
-        //     }
-        // }, false);
-
         const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
 
         this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
-        this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.enemy_ctx.beginPath();
+        this.enemy_ctx.arc(x + this.selectedTowerImage.size / 2, y + this.selectedTowerImage.size / 2, this.selectedTowerImage.range, 0, 2 * Math.PI, false);
+        // this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
         this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.enemy_ctx.fill();
     };
 
+    // Given (x, y) coordinate for the mouse, figure out if this spot is open or blocked
     isTowerPlacementGuideBlocked(x, y) {
-        return this.controller.towers.reduce((acc, tower) => {
+        // Is the tower on screen?
+        const off_screen = x < 0 || y < 0 || x + this.selectedTowerImage.size > this.canvas.width || y + this.selectedTowerImage.size > this.canvas.width;
+
+        // Is the guide overlapping with a tower?
+        const blocked_by_tower = this.controller.towers.reduce((acc, tower) => {
             if (
                 x > tower.x + tower.size ||
                 x + this.selectedTowerImage.size < tower.x ||
@@ -187,6 +187,37 @@ export default class View {
                 return true;
             }
         }, false);
+
+        // Is the guide overlapping with the track?
+        let blocked_by_track = false;
+        for (let i = 0; i < this.map.enemyPath.length - 1; i++) {
+            const x1 = this.map.enemyPath[i][0];
+            const y1 = this.map.enemyPath[i][1];
+            const x2 = this.map.enemyPath[i+1][0];
+            const y2 = this.map.enemyPath[i+1][1];
+
+            // Check for collisions on the left, right, top, and bottom of guide
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x + this.selectedTowerImage.size, y, x + this.selectedTowerImage.size, y + this.selectedTowerImage.size);
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y, x, y + this.selectedTowerImage.size);
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y, x + this.selectedTowerImage.size, y);
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y + this.selectedTowerImage.size, x + this.selectedTowerImage.size, y + this.selectedTowerImage.size);
+        }
+
+        return off_screen || blocked_by_tower || blocked_by_track;
+    };
+
+    // Line intersecting a line 
+    // code adapted from: http://www.jeffreythompson.org/collision-detection/line-rect.php
+    lineLine(x1, y1, x2, y2, x3, y3, x4, y4) {
+        const uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+        const uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+
+        // if uA and uB are between 0-1, lines are colliding
+        if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     initiateLossScreen() {
