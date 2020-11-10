@@ -15,5 +15,9 @@
   "homepage": "https://github.com/DungeonMaestro215/426FinalProject#readme",
   "dependencies": {
     "bulma": "^0.9.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.13.0"
   }
 }
