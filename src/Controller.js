@@ -68,15 +68,24 @@ export default class Controller {
             this.enemies.push(newEnemy);
         }
 
-        if (this.gameData.elapsedTime % 9 === 0) {
-            //cause each tower to fire 1 shot at nearest enemy
-            for (let tower of this.towers) {
+        this.towers.forEach(tower => {
+            if (this.gameData.elapsedTime % (9 / tower.fire_rate) === 0) {
                 const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
                 if (projectile != undefined) {
                     this.projectiles.push(projectile);
                 }
             }
-        }
+        });
+
+        // if (this.gameData.elapsedTime % 9 === 0) {
+        //     //cause each tower to fire 1 shot at nearest enemy
+        //     for (let tower of this.towers) {
+        //         const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
+        //         if (projectile != undefined) {
+        //             this.projectiles.push(projectile);
+        //         }
+        //     }
+        // }
 
         // move every projectile
         this.projectiles.forEach(projectile => projectile.move());
@@ -100,7 +109,7 @@ export default class Controller {
                     projectile.y >= enemy.y &&
                     projectile.y <= enemy.y + enemy.size
                 ) {
-                    enemy.handleCollision();
+                    enemy.handleCollision(projectile);
                     projectile.has_collided = true;
                 }
             }

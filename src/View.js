@@ -262,7 +262,11 @@ export default class View {
             // Upgrade and remove buttons
             const upgrade_butt = document.createElement('button');
             upgrade_butt.classList.add('button');
-            upgrade_butt.classList.add('is-success');
+            if (this.controller.gameData.money < this.clickedTower.upgrade_cost) {
+                upgrade_butt.classList.add('is-dark');
+            } else {
+                upgrade_butt.classList.add('is-success');
+            }
             upgrade_butt.innerText = `Upgrade: $${this.clickedTower.upgrade_cost}`;
             upgrade_butt.addEventListener('click', () => this.upgradeTower());
 
@@ -288,6 +292,7 @@ export default class View {
         this.setMoney(this.controller.gameData.money);
         this.clickedTower.upgrade();
         this.updateTowerInfo();
+        // this.clickedTower.drawRange(this.towerplacement_ctx);
     }
 
     initiateLossScreen() {
