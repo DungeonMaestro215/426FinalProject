@@ -73,10 +73,8 @@ export default class Controller {
         }
 
         // move every projectile
-        this.projectiles.forEach(projectile => {
-            projectile.x += projectile.vx;
-            projectile.y += projectile.vy;
-        });
+        this.projectiles.forEach(projectile => projectile.move());
+        // Get rid of projectiles which go off screen
         this.projectiles = this.projectiles.filter(projectile => {
             return projectile.x > 0 &&
                 projectile.x < this.view.canvas.width &&
@@ -88,7 +86,6 @@ export default class Controller {
         // Handle collisions and then draw enemies
         for (const enemy of this.enemies) {
             for (const projectile of this.projectiles) {
-                //todo: projectiles that can't penetrate enemies should be destroyed here
                 if (
                     projectile.x >= enemy.x &&
                     projectile.x <= enemy.x + enemy.size &&
@@ -96,6 +93,7 @@ export default class Controller {
                     projectile.y <= enemy.y + enemy.size
                 ) {
                     enemy.handleCollision();
+                    projectile.has_collided = true;
                 }
             }
             if (enemy.getState() === "dead") {
@@ -106,6 +104,9 @@ export default class Controller {
                 enemy.move(this.view.map.enemyPath);
             }
         }
+
+        // Remove projectiles which need to be removed
+        this.projectiles = this.projectiles.filter(projectile => !projectile.has_collided);
 
         if (
             this.enemies.length > 0 ||

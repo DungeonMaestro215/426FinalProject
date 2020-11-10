@@ -5,7 +5,7 @@ export default class Enemy {
     health;
     velocity = 3;
     currentNode = 0;
-    size = 20;
+    size = 30;
     endCallbacks = [];
     reward = 5;
 

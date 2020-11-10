@@ -180,18 +180,29 @@ export default class View {
             const y1 = this.map.enemyPath[i][1];
             const x2 = this.map.enemyPath[i+1][0];
             const y2 = this.map.enemyPath[i+1][1];
-            const slope = (y2 - y1)/(x2 - x1);
 
-            const line = x => slope * (x - x1) + y1;
-
-            // if (y > line(x) && y + this.selectedTowerImage.size < line(x + this.selectedTowerImage.size)) {
-            //     blocked_by_track = true;
-            // } else if (y + this.selectedTowerImage.size < line(x) && y > line(x + this.selectedTowerImage.size)) {
-            //     blocked_by_track = true;
-            // }
+            // Check for collisions on the left, right, top, and bottom of guide
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x + this.selectedTowerImage.size, y, x + this.selectedTowerImage.size, y + this.selectedTowerImage.size);
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y, x, y + this.selectedTowerImage.size);
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y, x + this.selectedTowerImage.size, y);
+            blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y + this.selectedTowerImage.size, x + this.selectedTowerImage.size, y + this.selectedTowerImage.size);
         }
 
         return blocked_by_tower || blocked_by_track;
+    };
+
+    // Line intersecting a line 
+    // code adapted from: http://www.jeffreythompson.org/collision-detection/line-rect.php
+    lineLine(x1, y1, x2, y2, x3, y3, x4, y4) {
+        const uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+        const uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+
+        // if uA and uB are between 0-1, lines are colliding
+        if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     initiateLossScreen() {
