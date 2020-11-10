@@ -4,12 +4,13 @@ export default class Projectile {
     vx;
     vy;
 
-    constructor(x,y,vx,vy) {
+    constructor(x,y,vx,vy, damage) {
         this.x=x;
         this.y=y;
         this.vy=vy;
         this.vx=vx;
         this.has_collided = false;
+        this.damage = damage;
         this.type = 'normal';       // Placeholder for now. Can maybe be 'piercing,' 'fire,' etc...
     }
 

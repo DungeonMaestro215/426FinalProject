@@ -15,8 +15,8 @@ export default class Enemy {
         this.y = startY;
     }
 
-    handleCollision(){
-        this.health-=2;
+    handleCollision(projectile){
+        this.health -= projectile.damage;
     }
 
     addEndCallback(f){
@@ -43,6 +43,10 @@ export default class Enemy {
 
     draw(context) {
         context.drawImage(this.sprite, this.x, this.y, this.size, this.size);
+        
+        // Health Bar
+        context.fillStyle = 'rgba(0, 255, 0, .7)';
+        context.fillRect(this.x, this.y - this.size, this.health, 5);
     }
 
     move(path){
