@@ -73,12 +73,16 @@ export default class Controller {
         }
 
         // move every projectile
-        // todo: remove projectiles from the array that go beyond the canvas bounds so they don't keep taking up wam
-        for (let i = 0; i < this.projectiles.length; i++) {
-            let projectile = this.projectiles[i];
+        this.projectiles.forEach(projectile => {
             projectile.x += projectile.vx;
             projectile.y += projectile.vy;
-        }
+        });
+        this.projectiles = this.projectiles.filter(projectile => {
+            return projectile.x > 0 &&
+                projectile.x < this.view.canvas.width &&
+                projectile.y > 0 &&
+                projectile.y < this.view.canvas.height;
+        });
 
         // Check every enemy against every projectile for collisions
         // Handle collisions and then draw enemies

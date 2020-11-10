@@ -152,20 +152,6 @@ export default class View {
         );
         let [x, y] = getCursorPosition(this.canvas, e);
 
-        // // Is there a tower or the track in the way?
-        // const isBlocked = this.controller.towers.reduce((acc, tower) => {
-        //     if (
-        //         x > tower.x + tower.size ||
-        //         x + this.selectedTowerImage.size < tower.x ||
-        //         y > tower.y + tower.size ||
-        //         y + this.selectedTowerImage.size < tower.y
-        //     ) {
-        //         return acc || false;
-        //     } else {
-        //         return true;
-        //     }
-        // }, false);
-
         const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
 
         this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
@@ -173,8 +159,9 @@ export default class View {
         this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
     };
 
+    // Given (x, y) coordinate for the mouse, figure out if this spot is open or blocked
     isTowerPlacementGuideBlocked(x, y) {
-        return this.controller.towers.reduce((acc, tower) => {
+        const blocked_by_tower = this.controller.towers.reduce((acc, tower) => {
             if (
                 x > tower.x + tower.size ||
                 x + this.selectedTowerImage.size < tower.x ||
@@ -186,6 +173,25 @@ export default class View {
                 return true;
             }
         }, false);
+
+        let blocked_by_track = false;
+        for (let i = 0; i < this.map.enemyPath.length - 1; i++) {
+            const x1 = this.map.enemyPath[i][0];
+            const y1 = this.map.enemyPath[i][1];
+            const x2 = this.map.enemyPath[i+1][0];
+            const y2 = this.map.enemyPath[i+1][1];
+            const slope = (y2 - y1)/(x2 - x1);
+
+            const line = x => slope * (x - x1) + y1;
+
+            // if (y > line(x) && y + this.selectedTowerImage.size < line(x + this.selectedTowerImage.size)) {
+            //     blocked_by_track = true;
+            // } else if (y + this.selectedTowerImage.size < line(x) && y > line(x + this.selectedTowerImage.size)) {
+            //     blocked_by_track = true;
+            // }
+        }
+
+        return blocked_by_tower || blocked_by_track;
     }
 
     initiateLossScreen() {
