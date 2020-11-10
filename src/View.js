@@ -98,6 +98,9 @@ export default class View {
      * towers are rendered on the background canvas behind the enemies
      */
     renderTowerFromMouseEvent = (e, tower) => {
+        // Prevent clicking from highlighing anything on page
+        e.preventDefault();
+
         // Tower costs 50
         if (this.controller.gameData.money < 50) {
             return;
@@ -161,6 +164,10 @@ export default class View {
 
     // Given (x, y) coordinate for the mouse, figure out if this spot is open or blocked
     isTowerPlacementGuideBlocked(x, y) {
+        // Is the tower on screen?
+        const off_screen = x < 0 || y < 0 || x + this.selectedTowerImage.size > this.canvas.width || y + this.selectedTowerImage.size > this.canvas.width;
+
+        // Is the guide overlapping with a tower?
         const blocked_by_tower = this.controller.towers.reduce((acc, tower) => {
             if (
                 x > tower.x + tower.size ||
@@ -174,6 +181,7 @@ export default class View {
             }
         }, false);
 
+        // Is the guide overlapping with the track?
         let blocked_by_track = false;
         for (let i = 0; i < this.map.enemyPath.length - 1; i++) {
             const x1 = this.map.enemyPath[i][0];
@@ -188,7 +196,7 @@ export default class View {
             blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y + this.selectedTowerImage.size, x + this.selectedTowerImage.size, y + this.selectedTowerImage.size);
         }
 
-        return blocked_by_tower || blocked_by_track;
+        return off_screen || blocked_by_tower || blocked_by_track;
     };
 
     // Line intersecting a line 
