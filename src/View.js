@@ -72,9 +72,11 @@ export default class View {
     guideListener;
     toggleTowerPlacement(tower) {
         //store selected tower image to assist drawing tower on mouse location
+        // Also store info about selected tower to aid the placement guide
         this.selectedTowerImage = new Image();
         this.selectedTowerImage.src = tower.sprite;
         this.selectedTowerImage.size = tower.size;
+        this.selectedTowerImage.range = tower.range;
         //add and remove event listeners
         if (!(this.placingTower = !this.placingTower)) {
             this.enemy_canvas.removeEventListener(
@@ -133,7 +135,8 @@ export default class View {
             () => {
                 this.ctx.drawImage(img, x, y, tower.size, tower.size);
                 // Clear tower placement guide box
-                this.enemy_ctx.clearRect(x, y, tower.size, tower.size);
+                // this.enemy_ctx.clearRect(x, y, tower.size, tower.size);
+                this.enemy_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
             false
         );
@@ -158,8 +161,11 @@ export default class View {
         const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
 
         this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
-        this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.enemy_ctx.beginPath();
+        this.enemy_ctx.arc(x + this.selectedTowerImage.size / 2, y + this.selectedTowerImage.size / 2, this.selectedTowerImage.range, 0, 2 * Math.PI, false);
+        // this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
         this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.enemy_ctx.fill();
     };
 
     // Given (x, y) coordinate for the mouse, figure out if this spot is open or blocked

@@ -68,7 +68,10 @@ export default class Controller {
         if (this.gameData.elapsedTime % 9 === 0) {
             //cause each tower to fire 1 shot at nearest enemy
             for (let tower of this.towers) {
-                this.projectiles.push(tower.createProjectile(this.enemies, this.view.map.enemyPath));
+                const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
+                if (projectile != undefined) {
+                    this.projectiles.push(projectile);
+                }
             }
         }
 
