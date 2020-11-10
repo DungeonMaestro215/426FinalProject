@@ -6,6 +6,8 @@ export default class View {
     canvas = document.getElementById("canvas");
     enemy_canvas = document.getElementById("enemies");
     foreground = document.getElementById("foreground");
+    towerplacement_canvas = document.getElementById("towerplacement");
+    top_canvas = this.towerplacement_canvas;
 
     controller;
     drawing;
@@ -20,6 +22,7 @@ export default class View {
         this.drawing = false;
         this.enemy_ctx = this.enemy_canvas.getContext("2d");
         this.ctx = this.canvas.getContext("2d");
+        this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
         let towerTypes = [new AnimeGirlTower(), new MortyTower()];
         for(const towerType of towerTypes){
@@ -78,9 +81,15 @@ export default class View {
         this.selectedTowerImage.src = tower.sprite;
         this.selectedTowerImage.size = tower.size;
         this.selectedTowerImage.range = tower.range;
+        this.towerplacement_ctx.clearRect(
+            0,
+            0,
+            this.enemy_canvas.width,
+            this.enemy_canvas.height
+        );
         //add and remove event listeners
         if (!(this.placingTower = !this.placingTower)) {
-            this.enemy_canvas.removeEventListener(
+            this.top_canvas.removeEventListener(
                 "mousedown",
                 this.listener,
             );
@@ -89,7 +98,7 @@ export default class View {
         } else {
             window.addEventListener("mousemove",
                 this.guideListener = e => this.renderTowerPlacementGuide(e,tower));
-            this.enemy_canvas.addEventListener(
+            this.top_canvas.addEventListener(
                 "mousedown",
                 this.listener  = (e) => this.renderTowerFromMouseEvent(e,tower)
             );
@@ -137,7 +146,7 @@ export default class View {
                 this.ctx.drawImage(img, x, y, tower.size, tower.size);
                 // Clear tower placement guide box
                 // this.enemy_ctx.clearRect(x, y, tower.size, tower.size);
-                this.enemy_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.towerplacement_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
             false
         );
@@ -151,7 +160,7 @@ export default class View {
      * to indicate the user is in tower placing state
      */
     renderTowerPlacementGuide = (e) => {
-        this.enemy_ctx.clearRect(
+        this.towerplacement_ctx.clearRect(
             0,
             0,
             this.enemy_canvas.width,
@@ -161,12 +170,12 @@ export default class View {
 
         const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
 
-        this.enemy_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
-        this.enemy_ctx.beginPath();
-        this.enemy_ctx.arc(x + this.selectedTowerImage.size / 2, y + this.selectedTowerImage.size / 2, this.selectedTowerImage.range, 0, 2 * Math.PI, false);
+        this.towerplacement_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
+        this.towerplacement_ctx.beginPath();
+        this.towerplacement_ctx.arc(x + this.selectedTowerImage.size / 2, y + this.selectedTowerImage.size / 2, this.selectedTowerImage.range, 0, 2 * Math.PI, false);
         // this.enemy_ctx.fillRect(x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
-        this.enemy_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
-        this.enemy_ctx.fill();
+        this.towerplacement_ctx.drawImage(this.selectedTowerImage, x, y, this.selectedTowerImage.size, this.selectedTowerImage.size);
+        this.towerplacement_ctx.fill();
     };
 
     // Given (x, y) coordinate for the mouse, figure out if this spot is open or blocked

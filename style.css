@@ -34,6 +34,7 @@
 }
 
 canvas { position: absolute; }
+#towerplacement { z-index: 4; }
 #enemies { z-index: 3; }
 #foreground { z-index: 2; }
 #canvas { z-index: 1; }
