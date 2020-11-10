@@ -55,6 +55,7 @@ export default class View {
             this.enemy_canvas.height
         );
         for (let i = 0; i < this.controller.projectiles.length; i++) {
+            if(this.controller.projectiles[i] == undefined) {continue};
             this.controller.projectiles[i].draw(this.enemy_ctx);
         }
         for (let i = 0; i < this.controller.enemies.length; i++) {

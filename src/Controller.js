@@ -51,6 +51,9 @@ export default class Controller {
 
     async updateGame() {
         //spawn enemies
+        if(this.gameData.elapsedTime % 20) {
+            console.log(this.projectiles.length);
+        }
         if (
             this.gameData.elapsedTime % 30 === 0 &&
             ++this.gameData.enemiesSpawned < this.gameData.maxEnemies
@@ -89,6 +92,8 @@ export default class Controller {
         // Handle collisions and then draw enemies
         for (const enemy of this.enemies) {
             for (const projectile of this.projectiles) {
+                if(projectile == undefined) continue;
+                //todo: projectiles that can't penetrate enemies should be destroyed here
                 if (
                     projectile.x >= enemy.x &&
                     projectile.x <= enemy.x + enemy.size &&
