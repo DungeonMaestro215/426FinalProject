@@ -2,7 +2,7 @@ import Tower from "./Tower.js";
 
 export default class MortyTower extends Tower {
     constructor(x, y) {
-        super("../images/mortytower.png", x, y, "closest",12);
+        super("../images/mortytower.png", 'Morty Smith', x, y, "closest",12);
     }
 
     /*

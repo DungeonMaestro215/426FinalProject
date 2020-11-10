@@ -1,18 +1,22 @@
 import Projectile from "./Projectile.js";
 
-
-
 export default class Tower {
     sprite;
+    name;
+    cost = 50;
+    upgrade_cost = 20;
+    sell = 20;
     size = 55;
     x;
     y;
     targetType;
     bullet_v = 10;
     range = 200;
+    level = 1;
 
-    constructor(sprite, x, y, targetType, bulletVelocity) {
+    constructor(sprite, name, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
+        this.name = name;
         this.x = x;
         this.y = y;
         this.targetType = targetType;
@@ -69,5 +73,30 @@ export default class Tower {
         let bullet_vy = this.bullet_v * Math.sin(atan) * Math.sign(adx);
 
         return new Projectile(this.x, this.y, bullet_vx, bullet_vy);
+    }
+
+    upgrade() {
+        this.level++;
+        console.log("Upgrading...");
+    }
+
+    clickHandler(x, y) {
+        return x > this.x &&
+            x < this.x + this.size &&
+            y > this.y &&
+            y < this.y + this.size;
+    }
+
+    drawRange(ctx) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(255, 255, 255, .5)';
+        ctx.arc(this.x + this.size / 2, this.y + this.size / 2, this.range, 0, 2 * Math.PI, false);
+        ctx.fill();
+    }
+
+    renderTowerInfo() {
+        const info = document.createElement('div');
+        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p>`;
+        return info;
     }
 }
