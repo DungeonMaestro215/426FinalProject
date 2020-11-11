@@ -18,7 +18,9 @@
         console.log(document.getElementById("username").value, document.getElementById("password").value)
         const re = await axios({
             method: 'post',
-            url: 'http://192.168.1.10:8080/authenticate',
+            url: 'https://unc-td.herokuapp.com/authenticate',
+            //url: 'http://192.168.1.10:8080/authenticate', 
+
             data: {
                 username:document.getElementById("username").value,
                 password:document.getElementById("password").value
@@ -35,7 +37,8 @@
     if((token = localStorage.getItem("auth_token")) != null) {
         axios({
             method: 'post',
-            url: 'http://192.168.1.10:8080/checkToken',
+            url: 'https://unc-td.herokuapp.com/checkToken',
+            //url: 'http://192.168.1.10:8080/checkToken', 
             headers: {"Authorization": "Bearer " + token},
             data: {
                 token: token,

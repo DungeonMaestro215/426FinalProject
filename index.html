@@ -4,9 +4,19 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
         <link rel="stylesheet" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
         <title>Tower Defense</title>
     </head>
     <body>
+        <div class="modal" id="leaderboard_modal">
+            <div class="modal-background"></div>
+            <div class="modal-content" >
+                <div class="box" id="leaderboard">
+                    <h3>Leaderboard</h3>
+                </div>
+            </div>
+            <button id="leaderboard_close" class="modal-close is-large" aria-label="close"></button>
+            </div>
         <nav class="navbar" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <p class="navbar-item">UNC Tower Defense</p>
@@ -28,16 +38,20 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <a href="register.html" class="button is-primary">
+                            <a href="register.html" id="register" class="button is-primary">
                                 <strong>Sign up</strong>
                             </a>
-                            <a href="login.html" class="button is-light"> Log in </a>
+                            <a href="login.html" id="login" class="button is-light"> Log in </a>
                         </div>
                     </div>
                 </div>
             </div>
         </nav>
         <div class="container is-justify-content-center">
+            <button id="leaderboard_toggle">Leaderboard</button>
+            
+            
+    
             <div class="game-container">
                 <div class="flex-container">
                     <div id="stage">

@@ -15,8 +15,9 @@
             console.log(document.getElementById("username").value, document.getElementById("password").value)
             const re = await axios({
                 method: 'post',
-                url: 'http://192.168.1.10:8080/registerAccount',
-                data: {
+                url: 'https://unc-td.herokuapp.com/registerAccount',
+               //url: 'http://192.168.1.10:8080/registerAccount', 
+               data: {
                     username:document.getElementById("username").value,
                     password:document.getElementById("password").value 
                 }
