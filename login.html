@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>UNC Tower Defense - Register</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
+</head>
+<body>
+<form id="login_form">
+    <h1>Login</h1>
+    <h2 id="us"></h2>
+    <input id="username" />
+    <input id="password" />
+    <button type="submit">Login</button>
+</form>
+</body>
+<script>
+    async function login(event) {
+        event.preventDefault();
+        console.log(document.getElementById("username").value, document.getElementById("password").value)
+        const re = await axios({
+            method: 'post',
+            url: 'http://192.168.1.10:8080/authenticate',
+            data: {
+                username:document.getElementById("username").value,
+                password:document.getElementById("password").value
+            }
+        });
+        console.log(re.data.token);
+        localStorage.setItem("auth_token", re.data.token);
+        return false;
+    }
+
+    const form = document.getElementById("login_form");
+    form.addEventListener("submit", login, true);
+    let token;
+    if((token = localStorage.getItem("auth_token")) != null) {
+        axios({
+            method: 'post',
+            url: 'http://192.168.1.10:8080/checkToken',
+            headers: {"Authorization": "Bearer " + token},
+            data: {
+                token: token,
+            }
+        }).then(x => {
+            console.log(x);
+            document.getElementById("us").innerText = x.data;
+        });
+    }
+
+</script>
+</html>
