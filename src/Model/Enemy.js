@@ -3,6 +3,7 @@ export default class Enemy {
     x;
     y;
     health;
+    maxHealth;
     velocity = 3;
     currentNode = 0;
     size = 30;
@@ -46,7 +47,7 @@ export default class Enemy {
         
         // Health Bar
         context.fillStyle = 'rgba(0, 255, 0, .7)';
-        context.fillRect(this.x, this.y - this.size, this.health, 5);
+        context.fillRect(this.x, this.y - 10, (this.size / this.maxHealth * this.health), 5);
     }
 
     move(path){

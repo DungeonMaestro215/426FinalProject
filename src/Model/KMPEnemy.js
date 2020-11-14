@@ -13,5 +13,6 @@ export default class KMPEnemy extends Enemy {
         this.addEndCallback(endHandler);
         this.size = 20;
         this.health = 50;
+        this.maxHealth = this.health;
     }
 }

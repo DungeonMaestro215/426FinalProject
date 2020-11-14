@@ -8,5 +8,6 @@ export default class KrisEnemy extends Enemy {
         this.addEndCallback(endHandler);
         this.size = 20;
         this.health = 20;
+        this.maxHealth = this.health;
     }
 }
