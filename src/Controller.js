@@ -69,7 +69,10 @@ export default class Controller {
         }
 
         this.towers.forEach(tower => {
-            if (this.gameData.elapsedTime % (Math.round(9 / tower.fire_rate)) === 0) {
+            if (tower.targetType != 'single-use' &&
+                this.gameData.elapsedTime % (Math.round(9 / tower.fire_rate)) === 0) {
+                
+                // Have this tower fire a projectile
                 const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
                 if (projectile != undefined) {
                     this.projectiles.push(projectile);
@@ -101,8 +104,7 @@ export default class Controller {
         // Handle collisions and then draw enemies
         for (const enemy of this.enemies) {
             for (const projectile of this.projectiles) {
-                if(projectile == undefined) continue;
-                //todo: projectiles that can't penetrate enemies should be destroyed here
+                if (projectile == undefined) continue;
                 if (
                     projectile.x >= enemy.x &&
                     projectile.x <= enemy.x + enemy.size &&
@@ -113,6 +115,19 @@ export default class Controller {
                     projectile.has_collided = true;
                 }
             }
+            // Check every enemy against every single-use tower for collisions
+            for (const tower of this.towers) {
+                if (tower == undefined || tower.targetType != 'single-use') continue;
+                if (
+                    enemy.x <= tower.x + tower.size &&
+                    enemy.x + enemy.size >= tower.x &&
+                    enemy.y <= tower.y + tower.size &&
+                    enemy.y + enemy.size >= tower.y
+                ) {
+                    enemy.handleCollision(tower);
+                }
+            }
+
             if (enemy.getState() === "dead") {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
                 this.gameData.money += enemy.getReward();

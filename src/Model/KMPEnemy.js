@@ -11,7 +11,7 @@ export default class KMPEnemy extends Enemy {
         kmp_img.src = "./images/kmp.png"; // Set source path
         super(kmp_img, startX, startY);
         this.addEndCallback(endHandler);
-        this.size = 20;
+        this.size = 30;
         this.health = 50;
         this.maxHealth = this.health;
     }

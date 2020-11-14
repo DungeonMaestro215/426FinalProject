@@ -1,6 +1,7 @@
 import FirstMap from "./Model/FirstMap.js";
 import AnimeGirlTower from "./Model/AnimeGirlTower.js";
 import MortyTower from "./Model/MortyTower.js"
+import LogicGateTower from "./Model/LogicGateTower.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
@@ -27,7 +28,7 @@ export default class View {
         this.ctx = this.canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
-        let towerTypes = [new AnimeGirlTower(), new MortyTower()];
+        let towerTypes = [new AnimeGirlTower(), new MortyTower(), new LogicGateTower()];
         for(const towerType of towerTypes){
             document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
                 `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" src="${towerType.sprite}"/></div>`
@@ -235,7 +236,11 @@ export default class View {
             blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y + this.selectedTower.size, x + this.selectedTower.size, y + this.selectedTower.size);
         }
 
-        return off_screen || blocked_by_tower || blocked_by_track;
+        if (this.selectedTower.targetType != "single-use") {
+            return off_screen || blocked_by_tower || blocked_by_track;
+        } else {
+            return !blocked_by_track;
+        }
     }
 
     // Line intersecting a line 
