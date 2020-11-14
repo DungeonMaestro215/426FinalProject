@@ -52,7 +52,7 @@ export default class Controller {
     async updateGame() {
         //spawn enemies
         if(this.gameData.elapsedTime % 20) {
-            console.log(this.projectiles.length);
+            // console.log(this.projectiles.length);
         }
         if (
             this.gameData.elapsedTime % 30 === 0 &&
@@ -69,7 +69,7 @@ export default class Controller {
         }
 
         this.towers.forEach(tower => {
-            if (this.gameData.elapsedTime % (9 / tower.fire_rate) === 0) {
+            if (this.gameData.elapsedTime % (Math.round(9 / tower.fire_rate)) === 0) {
                 const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
                 if (projectile != undefined) {
                     this.projectiles.push(projectile);

@@ -80,8 +80,7 @@ export default class Tower {
     upgrade() {
         this.level++;
         this.damage += 5;
-        // this.range += 20;
-        console.log("Upgrading...");
+        this.range += 20;
     }
 
     clickHandler(x, y) {

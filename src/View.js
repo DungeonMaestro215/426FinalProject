@@ -4,6 +4,7 @@ import MortyTower from "./Model/MortyTower.js"
 
 export default class View {
     canvas = document.getElementById("canvas");
+    background = document.getElementById("background");
     enemy_canvas = document.getElementById("enemies");
     foreground = document.getElementById("foreground");
     towerplacement_canvas = document.getElementById("towerplacement");
@@ -18,7 +19,8 @@ export default class View {
     constructor() {
         //Create map object and load image to the canvas
         this.map.onLoad((img) => {
-            this.ctx.drawImage(img, 0, 0, 500, 500);
+            const bg_ctx = this.background.getContext("2d");
+            bg_ctx.drawImage(img, 0, 0, 500, 500);
         });
         this.drawing = false;
         this.enemy_ctx = this.enemy_canvas.getContext("2d");
@@ -274,7 +276,8 @@ export default class View {
             const remove_butt = document.createElement('button');
             remove_butt.classList.add('button');
             remove_butt.classList.add('is-danger');
-            remove_butt.innerText = `Sell: $${this.clickedTower.sell} (not implemented)`;
+            remove_butt.innerText = `Sell: $${this.clickedTower.sell}`;
+            remove_butt.addEventListener('click', () => this.sellTower());
 
             info.append(upgrade_butt);
             info.append(remove_butt);
@@ -292,7 +295,20 @@ export default class View {
         this.setMoney(this.controller.gameData.money);
         this.clickedTower.upgrade();
         this.updateTowerInfo();
-        // this.clickedTower.drawRange(this.towerplacement_ctx);
+        this.towerplacement_ctx.clearRect(0, 0, this.towerplacement_canvas.width, this.towerplacement_canvas.height);
+        this.clickedTower.drawRange(this.towerplacement_ctx);
+    }
+
+    sellTower() {
+        this.controller.gameData.money += this.clickedTower.sell;
+        this.setMoney(this.controller.gameData.money);
+        this.controller.towers = this.controller.towers.filter(tower => tower != this.clickedTower);
+
+        this.ctx.clearRect(this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+        this.clickedTower = undefined;
+
+        this.updateTowerInfo();
+        this.towerplacement_ctx.clearRect(0, 0, this.towerplacement_canvas.width, this.towerplacement_canvas.height);
     }
 
     initiateLossScreen() {
