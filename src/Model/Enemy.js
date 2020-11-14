@@ -9,6 +9,7 @@ export default class Enemy {
     size = 30;
     endCallbacks = [];
     reward = 5;
+    shot_by;
 
     constructor(sprite, startX,startY) {
         this.sprite = sprite;

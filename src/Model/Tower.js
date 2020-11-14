@@ -15,6 +15,7 @@ export default class Tower {
     level = 1;
     damage = 1;
     fire_rate = 1;
+    kills = 0;
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
@@ -74,7 +75,7 @@ export default class Tower {
         let bullet_vx = this.bullet_v * Math.cos(atan) * Math.sign(adx);
         let bullet_vy = this.bullet_v * Math.sin(atan) * Math.sign(adx);
 
-        return new Projectile(this.x, this.y, bullet_vx, bullet_vy, this.damage);
+        return new Projectile(this.x, this.y, bullet_vx, bullet_vy, this.damage, this);
     }
 
     upgrade() {
@@ -99,7 +100,11 @@ export default class Tower {
 
     renderTowerInfo() {
         const info = document.createElement('div');
-        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Damage: ${this.damage}</p>`;
+        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Kills: ${this.kills}</p><p>Damage: ${this.damage}</p>`;
         return info;
+    }
+
+    increaseKills() {
+        this.kills++;
     }
 }

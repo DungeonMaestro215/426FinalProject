@@ -266,6 +266,8 @@ export default class View {
             info.innerHTML = "";
             info.append(this.clickedTower.renderTowerInfo());
 
+            if (this.clickedTower.targetType == 'single-use') return;
+
             // Upgrade and remove buttons
             const upgrade_butt = document.createElement('button');
             upgrade_butt.classList.add('button');
@@ -277,7 +279,6 @@ export default class View {
             upgrade_butt.innerText = `Upgrade: $${this.clickedTower.upgrade_cost}`;
             upgrade_butt.addEventListener('click', () => this.upgradeTower());
 
-            // TODO: Make remove button do something
             const remove_butt = document.createElement('button');
             remove_butt.classList.add('button');
             remove_butt.classList.add('is-danger');
@@ -307,13 +308,17 @@ export default class View {
     sellTower() {
         this.controller.gameData.money += this.clickedTower.sell;
         this.setMoney(this.controller.gameData.money);
-        this.controller.towers = this.controller.towers.filter(tower => tower != this.clickedTower);
+        this.removeTower(this.clickedTower);
 
-        this.ctx.clearRect(this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
         this.clickedTower = undefined;
 
         this.updateTowerInfo();
         this.towerplacement_ctx.clearRect(0, 0, this.towerplacement_canvas.width, this.towerplacement_canvas.height);
+    }
+
+    removeTower(tower) {
+        this.controller.towers = this.controller.towers.filter(t => t != tower);
+        this.ctx.clearRect(tower.x, tower.y, tower.size, tower.size);
     }
 
     initiateLossScreen() {

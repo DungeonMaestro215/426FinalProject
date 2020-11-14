@@ -112,6 +112,7 @@ export default class Controller {
                     projectile.y <= enemy.y + enemy.size
                 ) {
                     enemy.handleCollision(projectile);
+                    enemy.shot_by = projectile.source;
                     projectile.has_collided = true;
                 }
             }
@@ -125,6 +126,14 @@ export default class Controller {
                     enemy.y + enemy.size >= tower.y
                 ) {
                     enemy.handleCollision(tower);
+                    enemy.shot_by = tower;
+                    tower.dealDamage();
+                    if (tower.remaining_damage <= 0) {
+                        this.view.removeTower(tower);
+                    }
+                    if (tower == this.view.clickedTower) {
+                        this.view.updateTowerInfo();
+                    }
                 }
             }
 
@@ -132,6 +141,7 @@ export default class Controller {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
                 this.gameData.money += enemy.getReward();
                 this.view.setMoney(this.gameData.money);
+                enemy.shot_by.increaseKills();
                 this.view.updateTowerInfo();
             } else {
                 enemy.move(this.view.map.enemyPath);
