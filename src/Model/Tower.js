@@ -75,7 +75,9 @@ export default class Tower {
         let bullet_vx = this.bullet_v * Math.cos(atan) * Math.sign(adx);
         let bullet_vy = this.bullet_v * Math.sin(atan) * Math.sign(adx);
 
-        return new Projectile(this.x, this.y, bullet_vx, bullet_vy, this.damage, this);
+        const proj_img = new Image();
+        proj_img.src = "../images/bubble.webp"; 
+        return new Projectile(proj_img, this.x, this.y, bullet_vx, bullet_vy, this.damage, this);
     }
 
     upgrade() {

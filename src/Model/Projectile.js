@@ -1,11 +1,13 @@
 export default class Projectile {
+    sprite;
     x;
     y;
     vx;
     vy;
     source;
 
-    constructor(x,y,vx,vy, damage, source) {
+    constructor(sprite, x,y,vx,vy, damage, source) {
+        this.sprite = sprite;
         this.x=x;
         this.y=y;
         this.vy=vy;
@@ -17,8 +19,9 @@ export default class Projectile {
     }
 
     draw = (ctx) =>  {
-        ctx.fillStyle = 'rgba(0, 0, 0, 1)';     // Color projectiles black
-        ctx.fillRect(this.x, this.y, 5, 5);
+        // ctx.fillStyle = 'rgba(0, 0, 0, 1)';     // Color projectiles black
+        // ctx.fillRect(this.x, this.y, 5, 5);
+        ctx.drawImage(this.sprite, this.x, this.y, 10, 10);
     }
 
     move = () => {
