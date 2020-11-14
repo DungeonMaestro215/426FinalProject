@@ -117,6 +117,7 @@ export default class Controller {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
                 this.gameData.money += enemy.getReward();
                 this.view.setMoney(this.gameData.money);
+                this.view.updateTowerInfo();
             } else {
                 enemy.move(this.view.map.enemyPath);
             }
@@ -129,7 +130,7 @@ export default class Controller {
             this.enemies.length > 0 ||
             this.gameData.enemiesSpawned < this.gameData.maxEnemies
         ) {
-            await new Promise((resolve) => setTimeout(resolve, 32));
+            await new Promise((resolve) => setTimeout(resolve, 32 / this.gameData.gameSpeed));
             this.gameData.elapsedTime++;
             return this.updateGame();
         }
@@ -145,6 +146,17 @@ export default class Controller {
             this.view.initiateLossScreen();
         } else {
             this.view.setLives(this.gameData.health);
+        }
+    }
+
+    toggleFastForward() {
+        const ffbutt = document.getElementById("fastforward");
+        if (this.gameData.gameSpeed == 1) {
+            this.gameData.gameSpeed = 2;
+            ffbutt.style.backgroundColor = 'gold';
+        } else {
+            this.gameData.gameSpeed = 1;
+            ffbutt.style.backgroundColor = 'white';
         }
     }
 }

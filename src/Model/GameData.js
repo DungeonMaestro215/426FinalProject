@@ -7,5 +7,6 @@ export default class GameData {
         this.enemiesSpawned = 0;
         this.maxEnemies = 0;
         this.money = 250;
+        this.gameSpeed = 1;
     }
 }
