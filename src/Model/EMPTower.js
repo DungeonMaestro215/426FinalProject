@@ -5,7 +5,8 @@ export default class EMPTower extends Tower {
     constructor(x, y) {
         super("../images/teslacoil.png", 'Tesla Coil', x, y, "AOE", 10);
         this.range = 100;
-        this.fire_rate = 1;
+        this.damage = 1;
+        this.fire_rate = .5;
         this.bullet_v = 5;
     }
 
@@ -15,6 +16,10 @@ export default class EMPTower extends Tower {
         }
 
         // Are there enemies in tower range?
+        const [target, min_d] = this.selectTarget(enemies);
+        if (target == undefined) {
+            return;
+        }
 
         // Fire Several projectiles in a circle around the tower
         const num_projectiles = 8;
@@ -35,5 +40,13 @@ export default class EMPTower extends Tower {
         return bullet_vxs.map((vx, idx) => {
             return new Projectile(proj_img, proj_size, this.x + this.size / 3, this.y, vx, bullet_vys[idx], this.damage, this.range, this);
         });
+    }
+
+    upgrade() {
+        this.level++;
+        this.damage += 1;
+        // Fix weird issues with decimals
+        // this.damage = Math.round(this.damage * 10) / 10;
+
     }
 }
