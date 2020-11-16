@@ -2,6 +2,7 @@ import FirstMap from "./Model/FirstMap.js";
 import AnimeGirlTower from "./Model/AnimeGirlTower.js";
 import MortyTower from "./Model/MortyTower.js"
 import LogicGateTower from "./Model/LogicGateTower.js";
+import EMPTower from "./Model/EMPTower.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
@@ -28,7 +29,7 @@ export default class View {
         this.ctx = this.canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
-        let towerTypes = [new AnimeGirlTower(), new MortyTower(), new LogicGateTower()];
+        let towerTypes = [new AnimeGirlTower(), new MortyTower(), new EMPTower(), new LogicGateTower()];
         for(const towerType of towerTypes){
             document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
                 `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" src="${towerType.sprite}"/></div>`
@@ -265,8 +266,6 @@ export default class View {
         if (this.clickedTower) {
             info.innerHTML = "";
             info.append(this.clickedTower.renderTowerInfo());
-
-            if (this.clickedTower.targetType == 'single-use') return;
 
             // Upgrade and remove buttons
             const upgrade_butt = document.createElement('button');

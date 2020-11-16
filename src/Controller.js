@@ -73,9 +73,9 @@ export default class Controller {
                 this.gameData.elapsedTime % (Math.round(9 / tower.fire_rate)) === 0) {
                 
                 // Have this tower fire a projectile
-                const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
-                if (projectile != undefined) {
-                    this.projectiles.push(projectile);
+                const projectiles = tower.createProjectile(this.enemies, this.view.map.enemyPath);
+                if (projectiles != undefined) {
+                    this.projectiles.push(...projectiles);
                 }
             }
         });
@@ -97,7 +97,8 @@ export default class Controller {
             return projectile.x > 0 &&
                 projectile.x < this.view.canvas.width &&
                 projectile.y > 0 &&
-                projectile.y < this.view.canvas.height;
+                projectile.y < this.view.canvas.height &&
+                projectile.distance < projectile.range;
         });
 
         // Check every enemy against every projectile for collisions
@@ -106,10 +107,14 @@ export default class Controller {
             for (const projectile of this.projectiles) {
                 if (projectile == undefined) continue;
                 if (
-                    projectile.x >= enemy.x &&
+                    // projectile.x >= enemy.x &&
+                    // projectile.x <= enemy.x + enemy.size &&
+                    // projectile.y >= enemy.y &&
+                    // projectile.y <= enemy.y + enemy.size
                     projectile.x <= enemy.x + enemy.size &&
-                    projectile.y >= enemy.y &&
-                    projectile.y <= enemy.y + enemy.size
+                    projectile.x + projectile.size >= enemy.x &&
+                    projectile.y <= enemy.y + enemy.size &&
+                    projectile.y + projectile.size >= enemy.y
                 ) {
                     enemy.handleCollision(projectile);
                     enemy.shot_by = projectile.source;
@@ -158,8 +163,15 @@ export default class Controller {
             await new Promise((resolve) => setTimeout(resolve, 32 / this.gameData.gameSpeed));
             this.gameData.elapsedTime++;
             return this.updateGame();
+        } else {
+            // Remove all of the single use towers
+            this.towers.forEach(tower => {
+                if (tower.targetType == 'single-use') { 
+                    this.view.removeTower(tower) 
+                }});
         }
     }
+
 
     enemyReachedEndHandler(enemy) {
         this.enemies.splice(
