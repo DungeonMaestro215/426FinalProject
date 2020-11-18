@@ -37,6 +37,7 @@ export default class EMPTower extends Tower {
         const proj_img = new Image();
         proj_img.src = "../images/lightning.png";
 
+        // Generate one projectile for each direction
         return bullet_vxs.map((vx, idx) => {
             return new Projectile(proj_img, proj_size, this.x + this.size / 3, this.y, vx, bullet_vys[idx], this.damage, this.range, this);
         });
