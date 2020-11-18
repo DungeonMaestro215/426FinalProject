@@ -43,6 +43,10 @@ export default class EMPTower extends Tower {
     }
 
     upgrade() {
+        this.upgradeCounter++;
+        if (this.upgradeCounter >= 1) {
+            this.upgrade_cost += 20;
+        }
         this.level++;
         this.damage += 1;
         // Fix weird issues with decimals
