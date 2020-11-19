@@ -37,9 +37,16 @@ async function getUser() {
             headers: {Authorization: 'Bearer ' + token},
         })
         document.getElementById("register").remove();
-        document.getElementById("login").replaceWith("Logged in as " + profile.data.username);
+        document.getElementById("login").outerHTML = ("<span id='loggedin' class='navbar-item'>Logged in as " + profile.data.username + " </span>");
+        document.getElementById("loggedin").insertAdjacentHTML("afterend", "<button id='log_out' class='button is-primary'>Log Out</button>")
+        document.getElementById("log_out").addEventListener("click",logOut);
         return x.data;
     }
+}
+
+async function logOut() {
+    localStorage.setItem("auth_token", null);
+    window.location = "./"
 }
 
 async function writeScore(user_id, score){
@@ -61,9 +68,6 @@ async function generateLeaderboard() {
         type: "GET",
         url: backend_url + "/scores?limit=20"
     })
-
-    console.log(leaderboard);
-
     for(const score of leaderboard.data){
         document.getElementById('leaderboard').insertAdjacentHTML('beforeend', `<p>${score.username + " " + score.score + " " + score.timestamp}</p>`)
 
@@ -73,5 +77,4 @@ async function generateLeaderboard() {
     document.getElementById("leaderboard_close").addEventListener("click", () => modal.classList.remove("is-active") );
     document.querySelector(".modal-background").addEventListener("click", () => modal.classList.remove("is-active") );
     document.getElementById('leaderboard_toggle').addEventListener("click", () => modal.classList.add("is-active"));
-    return 
 }
