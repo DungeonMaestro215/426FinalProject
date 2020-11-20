@@ -1,5 +1,4 @@
 import KMPEnemy from "./Model/KMPEnemy.js";
-import Projectile from "./Model/Projectile.js";
 import GameData from "./Model/GameData.js";
 import KrisEnemy from "./Model/KrisEnemy.js";
 
@@ -52,6 +51,9 @@ export default class Controller {
 
     async updateGame() {
         //spawn enemies
+        if(this.gameData.elapsedTime % 20) {
+            // console.log(this.projectiles.length);
+        }
         if (
             this.gameData.elapsedTime % 30 === 0 &&
             ++this.gameData.enemiesSpawned < this.gameData.maxEnemies
@@ -66,90 +68,110 @@ export default class Controller {
             this.enemies.push(newEnemy);
         }
 
-        if (this.gameData.elapsedTime % 9 === 0) {
-            //cause each tower to fire 1 shot at nearest enemy
-            this.fireTowers();
-        }
+        this.towers.forEach(tower => {
+            if (tower.targetType != 'single-use' &&
+                this.gameData.elapsedTime % (Math.round(9 / tower.fire_rate)) === 0) {
+                
+                // Have this tower fire a projectile
+                const projectiles = tower.createProjectile(this.enemies, this.view.map.enemyPath);
+                if (projectiles != undefined) {
+                    this.projectiles.push(...projectiles);
+                }
+            }
+        });
+
+        // if (this.gameData.elapsedTime % 9 === 0) {
+        //     //cause each tower to fire 1 shot at nearest enemy
+        //     for (let tower of this.towers) {
+        //         const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
+        //         if (projectile != undefined) {
+        //             this.projectiles.push(projectile);
+        //         }
+        //     }
+        // }
 
         // move every projectile
-        // todo: remove projectiles from the array that go beyond the canvas bounds so they don't keep taking up wam
-        for (let i = 0; i < this.projectiles.length; i++) {
-            let projectile = this.projectiles[i];
-            projectile.x += projectile.vx;
-            projectile.y += projectile.vy;
-        }
+        this.projectiles.forEach(projectile => projectile.move());
+        // Get rid of projectiles which go off screen
+        this.projectiles = this.projectiles.filter(projectile => {
+            return projectile.x > 0 &&
+                projectile.x < this.view.canvas.width &&
+                projectile.y > 0 &&
+                projectile.y < this.view.canvas.height &&
+                projectile.distance < projectile.range;
+        });
 
         // Check every enemy against every projectile for collisions
         // Handle collisions and then draw enemies
         for (const enemy of this.enemies) {
             for (const projectile of this.projectiles) {
-                //todo: projectiles that can't penetrate enemies should be destroyed here
+                if (projectile == undefined) continue;
                 if (
-                    projectile.x >= enemy.x &&
-                    projectile.x <= enemy.x + 20 &&
-                    projectile.y >= enemy.y &&
-                    projectile.y <= enemy.y + 20
+                    // projectile.x >= enemy.x &&
+                    // projectile.x <= enemy.x + enemy.size &&
+                    // projectile.y >= enemy.y &&
+                    // projectile.y <= enemy.y + enemy.size
+                    projectile.x <= enemy.x + enemy.size &&
+                    projectile.x + projectile.size >= enemy.x &&
+                    projectile.y <= enemy.y + enemy.size &&
+                    projectile.y + projectile.size >= enemy.y
                 ) {
-                    enemy.handleCollision();
+                    enemy.handleCollision(projectile);
+                    enemy.shot_by = projectile.source;
+                    projectile.has_collided = true;
                 }
             }
+            // Check every enemy against every single-use tower for collisions
+            for (const tower of this.towers) {
+                if (tower == undefined || tower.targetType != 'single-use') continue;
+                if (
+                    enemy.x <= tower.x + tower.size &&
+                    enemy.x + enemy.size >= tower.x &&
+                    enemy.y <= tower.y + tower.size &&
+                    enemy.y + enemy.size >= tower.y
+                ) {
+                    enemy.handleCollision(tower);
+                    enemy.shot_by = tower;
+                    tower.dealDamage();
+                    if (tower.remaining_damage <= 0) {
+                        this.view.removeTower(tower);
+                    }
+                    if (tower == this.view.clickedTower) {
+                        this.view.updateTowerInfo();
+                    }
+                }
+            }
+
             if (enemy.getState() === "dead") {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
                 this.gameData.money += enemy.getReward();
                 this.view.setMoney(this.gameData.money);
+                enemy.shot_by.increaseKills();
+                this.view.updateTowerInfo();
             } else {
                 enemy.move(this.view.map.enemyPath);
             }
         }
 
+        // Remove projectiles which need to be removed
+        this.projectiles = this.projectiles.filter(projectile => !projectile.has_collided);
+
         if (
             this.enemies.length > 0 ||
             this.gameData.enemiesSpawned < this.gameData.maxEnemies
         ) {
-            await new Promise((resolve) => setTimeout(resolve, 32));
+            await new Promise((resolve) => setTimeout(resolve, 32 / this.gameData.gameSpeed));
             this.gameData.elapsedTime++;
             return this.updateGame();
+        } else {
+            // Remove all of the single use towers
+            this.towers.forEach(tower => {
+                if (tower.targetType == 'single-use') { 
+                    this.view.removeTower(tower) 
+                }});
         }
     }
 
-    /* Controller tells each tower which enemy it will
-     * fire at. The tower is then responsible for creating
-     * projectiles. This allows for different towers
-     * to do different things... maybe
-     */
-    fireTowers() {
-        for (let tower of this.towers) {
-            if (this.enemies.length < 1) {
-                break;
-            }
-            let min_d = Number.MAX_SAFE_INTEGER;
-            let target = this.enemies[0];
-
-            // Which enemy should the tower shoot at?
-            if (tower.targetType == "first") {
-                // Select first (or farthest) enemy
-                let enemy = this.enemies[0];
-                target = enemy;
-                let dx = enemy.x - tower.x;
-                let dy = enemy.y - tower.y;
-                min_d = Math.sqrt(dx ** 2 + dy ** 2);
-            } else if (tower.targetType == "closest") {
-                // Select closest enemy
-                for (let enemy of this.enemies) {
-                    let dx = enemy.x - tower.x;
-                    let dy = enemy.y - tower.y;
-                    let d = Math.sqrt(dx ** 2 + dy ** 2);
-                    if (d < min_d) {
-                        min_d = d;
-                        target = enemy;
-                    }
-                }
-            } 
-
-            // Tell this tower to fire
-            this.projectiles.push(tower.fire(target, min_d, this.view.map.enemyPath));
-        }
-    }
 
     enemyReachedEndHandler(enemy) {
         this.enemies.splice(
@@ -162,6 +184,16 @@ export default class Controller {
         } else {
             this.view.setLives(this.gameData.health);
         }
-        console.log(this.gameData.health);
+    }
+
+    toggleFastForward() {
+        const ffbutt = document.getElementById("fastforward");
+        if (this.gameData.gameSpeed == 1) {
+            this.gameData.gameSpeed = 2;
+            ffbutt.style.backgroundColor = 'gold';
+        } else {
+            this.gameData.gameSpeed = 1;
+            ffbutt.style.backgroundColor = 'white';
+        }
     }
 }

@@ -3,11 +3,13 @@ export default class Enemy {
     x;
     y;
     health;
+    maxHealth;
     velocity = 3;
     currentNode = 0;
-    size = 20;
+    size = 30;
     endCallbacks = [];
     reward = 5;
+    shot_by;
 
     constructor(sprite, startX,startY) {
         this.sprite = sprite;
@@ -15,8 +17,8 @@ export default class Enemy {
         this.y = startY;
     }
 
-    handleCollision(){
-        this.health--;
+    handleCollision(projectile){
+        this.health -= projectile.damage;
     }
 
     addEndCallback(f){
@@ -43,6 +45,11 @@ export default class Enemy {
 
     draw(context) {
         context.drawImage(this.sprite, this.x, this.y, this.size, this.size);
+        
+        // Health Bar
+        const mapped_health = this.size / this.maxHealth * this.health;
+        context.fillStyle = mapped_health > .25 * this.maxHealth ? 'rgba(0, 255, 0, .7)' : 'rgba(255, 0, 0, .7)';
+        context.fillRect(this.x, this.y - 10, mapped_health, 5);
     }
 
     move(path){

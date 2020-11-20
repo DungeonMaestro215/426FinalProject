@@ -37,19 +37,28 @@
                 </div>
             </div>
         </nav>
-
-        <div class="flex-container">
-            <div id="stage">
-                <canvas id="enemies" width="500px" height="500px"></canvas>
-                <canvas id="foreground" width="500px" height="500px"></canvas>
-                <canvas id="canvas" width="500px" height="500px"></canvas>
-            </div>
-            <div id="control" style="margin-top: 10px; margin-left: 5px">
-                <span id="round">Round: </span>
-                <button class="button" id="roundStart">Start round</button>
-                <button class="button" id="addTower">Add tower</button>
-                <span id="lives">Lives: </span>
-                <span id="money">Money: </span>
+        <div class="container is-justify-content-center">
+            <div class="game-container">
+                <div class="flex-container">
+                    <div id="stage">
+                        <canvas id="towerplacement" width="500px" height="500px"></canvas>
+                        <canvas id="enemies" width="500px" height="500px"></canvas>
+                        <canvas id="foreground" width="500px" height="500px"></canvas>
+                        <canvas id="background" width="500px" height="500px"></canvas>
+                        <canvas id="canvas" width="500px" height="500px"></canvas>
+                    </div>
+                    <div id="control" style="margin-top: 10px; margin-left: 5px">
+                        <span id="round">Round: </span>
+                        <button class="button" id="roundStart">Start round</button>
+                        <button class="button" id="fastforward">>></button>
+                        <span id="lives">Lives: </span>
+                        <span id="money">Money: </span>
+                    </div>
+                </div>
+                <div class="towerSidebar" id="towerSidebar">
+                    <p>Create Tower</p>
+                </div>
+                <div class="towerSidebar" id="towerInfo"></div>
             </div>
         </div>
         <script type="module" src="src/Main.js"></script>

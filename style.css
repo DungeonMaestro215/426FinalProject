@@ -1,3 +1,16 @@
+html {
+    background-color: #d2defc;
+}
+
+.navbar {
+    background-color: #041148;
+}
+
+.navbar-item {
+    color: white;
+    font-weight: bold;
+}
+
 .square {
     width: 50px;
     height: 50px;
@@ -8,6 +21,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 
@@ -22,7 +42,13 @@
     height: 500px;
 }
 
-canvas { position: absolute; }
+.towerSidebar {
+    width: 140px;
+    padding: 14px;
+}
+
+canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
+#towerplacement { z-index: 4; }
 #enemies { z-index: 3; }
 #foreground { z-index: 2; }
 #canvas { z-index: 1; }
