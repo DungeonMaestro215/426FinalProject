@@ -8,12 +8,14 @@ export default class Controller {
     enemies;
     towers;
     projectiles;
+    loss_handlers;
 
     constructor(view) {
         this.view = view;
         this.gameData = new GameData();
         this.enemies = [];
         this.towers = [];
+        this.loss_handlers = [];
         this.projectiles = [];
         this.view.setLives(this.gameData.health);
         this.view.setRound(this.gameData.round);
@@ -181,6 +183,7 @@ export default class Controller {
         if (!this.gameData.health--) {
             this.gameData.state = "LOST";
             this.view.initiateLossScreen();
+            this.loss_handlers.forEach(f => f(this.gameData.round));
         } else {
             this.view.setLives(this.gameData.health);
         }
