@@ -2,7 +2,6 @@ import Controller from "./Controller.js";
 import View from "./View.js";
 
 const backend_url = 'https://unc-td.herokuapp.com';
-//const backend_url = 'http://192.168.1.10:8080';
 
 window.onload = async () => {
     let view = new View();
@@ -16,7 +15,6 @@ window.onload = async () => {
     
     generateLeaderboard();
     const user = await getUser();
-    //writeScore(user, 20);
     controller.loss_handlers.push((score) => writeScore(user,score));
 }
 
@@ -37,9 +35,12 @@ async function getUser() {
             headers: {Authorization: 'Bearer ' + token},
         })
         document.getElementById("register").remove();
-        document.getElementById("login").outerHTML = ("<span id='loggedin' class='navbar-item'>Logged in as " + profile.data.username + " </span>");
-        document.getElementById("loggedin").insertAdjacentHTML("afterend", "<button id='log_out' class='button is-primary'>Log Out</button>")
+        document.getElementById("login").outerHTML = "<button id='log_out' class='button is-primary'>Log Out</button>";
         document.getElementById("log_out").addEventListener("click",logOut);
+        document.querySelector(".buttons").insertAdjacentHTML("beforebegin",
+            "<span id='loggedin' class='navbar-item is-vcentered'>" + profile.data.username + "</span>"
+        );
+
         return x.data;
     }
 }

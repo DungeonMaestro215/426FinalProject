@@ -1,0 +1,84 @@
+<html>
+<head>
+    <title>UNC Tower Defense - Profile</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
+    <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a href="./" class="navbar-item">UNC Tower Defense</a>
+        <a
+                role="button"
+                class="navbar-burger burger"
+                aria-label="menu"
+                aria-expanded="false"
+                data-target="navt"
+        >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navt" class="navbar-menu">
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a href="register.html" id="register" class="button is-primary">
+                        <strong>Sign up</strong>
+                    </a>
+                    <a href="login.html" id="login" class="button is-light"> Log in </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container content">
+            <h1 class="has-text-centered">Your Profile</h1>
+            <div class="columns is-centered">
+                <div class="column content is-three-fifths">
+                    <h2 id="username"></h2>
+                    <div>
+                        Scores
+                        <div id="scores"></div>
+                    </div>
+                </div>
+            </div>
+</div>
+</body>
+<script>
+    const backend_url = 'https://unc-td.herokuapp.com';
+    document.addEventListener("DOMContentLoaded", async () => {
+        console.log("sneed")
+        let token, uid;
+        if((token = localStorage.getItem("auth_token")) != null) {
+            await axios({
+                method: 'post',
+                url: 'https://unc-td.herokuapp.com/checkToken',
+                headers: {"Authorization": "Bearer " + token},
+                data: {
+                    token: token,
+                }
+            }).then(x => {
+                console.log(x);
+                uid = x.data;
+            });
+        }
+        const scores = await axios({
+            method: 'get',
+            url: backend_url + '/users/' + uid + /scores/,
+            headers: {Authorization: 'Bearer ' + token},
+        });
+        const profile = await axios({
+            method: 'get',
+            url: backend_url + '/users/' + uid,
+            headers: {Authorization: 'Bearer ' + token},
+        });
+        console.log(profile);
+        document.getElementById("username").innerText = profile.data.username;
+        console.log(scores);
+        scores.data.forEach(x => document.getElementById("scores").insertAdjacentHTML("beforeend", `<p>${x.score}</p>`))
+    })
+</script>
+</html>
