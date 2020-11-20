@@ -15,6 +15,8 @@ export default class Tower {
     level = 1;
     damage = 1;
     fire_rate = 1;
+    kills = 0;
+    upgradeCounter = 0;
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
@@ -42,6 +44,7 @@ export default class Tower {
 
         return [target, min_d];
     }
+
 
     //returns a projectile object aimed at enemy chosen by the tower
     createProjectile(enemies, enemyPath) {
@@ -74,14 +77,20 @@ export default class Tower {
         let bullet_vx = this.bullet_v * Math.cos(atan) * Math.sign(adx);
         let bullet_vy = this.bullet_v * Math.sin(atan) * Math.sign(adx);
 
-        return new Projectile(this.x, this.y, bullet_vx, bullet_vy, this.damage);
+        const proj_size = 10;
+        const proj_img = new Image();
+        proj_img.src = "../images/bubble.webp"; 
+        return [new Projectile(proj_img, proj_size, this.x + this.size / 2, this.y + this.size / 2, bullet_vx, bullet_vy, this.damage, Number.MAX_SAFE_INTEGER, this)];
     }
 
     upgrade() {
+        this.upgradeCounter++;
+        if (this.upgradeCounter >= 1) {
+            this.upgrade_cost += 20;
+        }
         this.level++;
         this.damage += 5;
-        // this.range += 20;
-        console.log("Upgrading...");
+        this.range += 20;
     }
 
     clickHandler(x, y) {
@@ -100,7 +109,11 @@ export default class Tower {
 
     renderTowerInfo() {
         const info = document.createElement('div');
-        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Damage: ${this.damage}</p>`;
+        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Kills: ${this.kills}</p><p>Damage: ${this.damage}</p>`;
         return info;
+    }
+
+    increaseKills() {
+        this.kills++;
     }
 }

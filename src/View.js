@@ -1,9 +1,12 @@
 import FirstMap from "./Model/FirstMap.js";
 import AnimeGirlTower from "./Model/AnimeGirlTower.js";
 import MortyTower from "./Model/MortyTower.js"
+import LogicGateTower from "./Model/LogicGateTower.js";
+import EMPTower from "./Model/EMPTower.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
+    background = document.getElementById("background");
     enemy_canvas = document.getElementById("enemies");
     foreground = document.getElementById("foreground");
     towerplacement_canvas = document.getElementById("towerplacement");
@@ -18,14 +21,15 @@ export default class View {
     constructor() {
         //Create map object and load image to the canvas
         this.map.onLoad((img) => {
-            this.ctx.drawImage(img, 0, 0, 500, 500);
+            const bg_ctx = this.background.getContext("2d");
+            bg_ctx.drawImage(img, 0, 0, 500, 500);
         });
         this.drawing = false;
         this.enemy_ctx = this.enemy_canvas.getContext("2d");
         this.ctx = this.canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
-        let towerTypes = [new AnimeGirlTower(), new MortyTower()];
+        let towerTypes = [new AnimeGirlTower(), new MortyTower(), new EMPTower(), new LogicGateTower()];
         for(const towerType of towerTypes){
             document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
                 `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" src="${towerType.sprite}"/></div>`
@@ -233,7 +237,11 @@ export default class View {
             blocked_by_track = blocked_by_track || this.lineLine(x1, y1, x2, y2, x, y + this.selectedTower.size, x + this.selectedTower.size, y + this.selectedTower.size);
         }
 
-        return off_screen || blocked_by_tower || blocked_by_track;
+        if (this.selectedTower.targetType != "single-use") {
+            return off_screen || blocked_by_tower || blocked_by_track;
+        } else {
+            return !blocked_by_track;
+        }
     }
 
     // Line intersecting a line 
@@ -270,11 +278,11 @@ export default class View {
             upgrade_butt.innerText = `Upgrade: $${this.clickedTower.upgrade_cost}`;
             upgrade_butt.addEventListener('click', () => this.upgradeTower());
 
-            // TODO: Make remove button do something
             const remove_butt = document.createElement('button');
             remove_butt.classList.add('button');
             remove_butt.classList.add('is-danger');
-            remove_butt.innerText = `Sell: $${this.clickedTower.sell} (not implemented)`;
+            remove_butt.innerText = `Sell: $${this.clickedTower.sell}`;
+            remove_butt.addEventListener('click', () => this.sellTower());
 
             info.append(upgrade_butt);
             info.append(remove_butt);
@@ -292,7 +300,24 @@ export default class View {
         this.setMoney(this.controller.gameData.money);
         this.clickedTower.upgrade();
         this.updateTowerInfo();
-        // this.clickedTower.drawRange(this.towerplacement_ctx);
+        this.towerplacement_ctx.clearRect(0, 0, this.towerplacement_canvas.width, this.towerplacement_canvas.height);
+        this.clickedTower.drawRange(this.towerplacement_ctx);
+    }
+
+    sellTower() {
+        this.controller.gameData.money += this.clickedTower.sell;
+        this.setMoney(this.controller.gameData.money);
+        this.removeTower(this.clickedTower);
+
+        this.clickedTower = undefined;
+
+        this.updateTowerInfo();
+        this.towerplacement_ctx.clearRect(0, 0, this.towerplacement_canvas.width, this.towerplacement_canvas.height);
+    }
+
+    removeTower(tower) {
+        this.controller.towers = this.controller.towers.filter(t => t != tower);
+        this.ctx.clearRect(tower.x, tower.y, tower.size, tower.size);
     }
 
     initiateLossScreen() {

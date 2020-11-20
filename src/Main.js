@@ -11,6 +11,9 @@ window.onload = async () => {
     view.draw();
     view.setMoney(controller.gameData.money);
     document
+        .getElementById("fastforward")
+        .addEventListener("click", controller.toggleFastForward.bind(controller));
+    document
         .getElementById("roundStart")
         .addEventListener("click", controller.startRound.bind(controller));
     
