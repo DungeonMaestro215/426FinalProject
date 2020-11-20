@@ -45,6 +45,7 @@ export default class Tower {
         return [target, min_d];
     }
 
+
     //returns a projectile object aimed at enemy chosen by the tower
     createProjectile(enemies, enemyPath) {
         if (enemies.length < 1) {
