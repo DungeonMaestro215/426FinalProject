@@ -84,24 +84,12 @@
 
         return false;
     }
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("login_form");
+        form.addEventListener("submit", login, true);
 
-    const form = document.getElementById("login_form");
-    form.addEventListener("submit", login, true);
-    let token;
-    if((token = localStorage.getItem("auth_token")) != null) {
-        axios({
-            method: 'post',
-            url: 'https://unc-td.herokuapp.com/checkToken',
-            //url: 'http://192.168.1.10:8080/checkToken', 
-            headers: {"Authorization": "Bearer " + token},
-            data: {
-                token: token,
-            }
-        }).then(x => {
-            console.log(x);
-            //document.getElementById("us").innerText = x.data;
-        });
-    }
+    })
+
 
 </script>
 </html>
