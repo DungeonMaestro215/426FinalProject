@@ -270,7 +270,7 @@ export default class View {
 
             // Upgrade and remove buttons
             const upgrade_butt = document.createElement('button');
-            upgrade_butt.classList.add('button');
+            upgrade_butt.classList.add('button', 'towerInfoButton');
             if (this.controller.gameData.money < this.clickedTower.upgrade_cost) {
                 upgrade_butt.classList.add('is-dark');
             } else {
@@ -280,12 +280,37 @@ export default class View {
             upgrade_butt.addEventListener('click', () => this.upgradeTower());
 
             const remove_butt = document.createElement('button');
-            remove_butt.classList.add('button');
+            remove_butt.classList.add('button', 'towerInfoButton');
             remove_butt.classList.add('is-danger');
             remove_butt.innerText = `Sell: $${this.clickedTower.sell}`;
             remove_butt.addEventListener('click', () => this.sellTower());
 
             info.append(upgrade_butt);
+
+            //create a button for named upgrades if the tower has one and meets required level
+            if(this.clickedTower.special_upgrades.length > 0
+            && this.clickedTower.special_upgrades[0].requiredLevel <= this.clickedTower.level && this.clickedTower.special_upgrades[0].available
+                ) {
+                const special_upgrade = this.clickedTower.special_upgrades[0];
+                const special_upgrade_butt = document.createElement('button')
+                special_upgrade_butt.classList.add('button', 'towerInfoButton');
+                special_upgrade_butt.style = "height: 90px"
+                if (this.controller.gameData.money < special_upgrade.cost) {
+                    special_upgrade_butt.classList.add('is-dark');
+                } else {
+                    special_upgrade_butt.classList.add('is-success');
+                }
+                special_upgrade_butt.innerHTML = special_upgrade.name + " <div style='font-size: 9px; max-width: 300px; white-space: pre-wrap'>" + special_upgrade.description +" </div>$" + special_upgrade.cost
+                special_upgrade_butt.addEventListener('click', () => {
+                    if(this.controller.gameData.money >= special_upgrade.cost) {
+                        this.controller.gameData.money -= special_upgrade.cost;
+                        this.clickedTower.applyUpgrade(special_upgrade)
+                    }
+                });
+                info.append(special_upgrade_butt);
+            }
+
+
             info.append(remove_butt);
         } else {
             info.innerHTML = "";

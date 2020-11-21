@@ -16,6 +16,7 @@ export default class Tower {
     damage = .5;
     fire_rate = 1;
     kills = 0;
+    special_upgrades = [];
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
@@ -24,6 +25,12 @@ export default class Tower {
         this.y = y;
         this.targetType = targetType;
         this.bullet_v = bulletVelocity;
+    }
+
+    applyUpgrade(upgrade) {
+        console.log(this.fire_rate);
+        upgrade.effect();
+        console.log(this.fire_rate);
     }
 
     //logic tower uses to choose which enemy to shoot at
@@ -59,15 +66,13 @@ export default class Tower {
 
         //predict where the target is gonna be when the projectile gets there
         let adx =
-            target.x +
-            target.getVx(enemyPath) *
-            1.11 *
+            (target.x - target.size/2)+
+            (target.getVx(enemyPath)) *
             (min_d / this.bullet_v) -
             this.x;
         let ady =
-            target.y +
+            (target.y - target.size/2)+
             target.getVy(enemyPath) *
-            1.11 *
             (min_d / this.bullet_v) -
             this.y;
         let atan = Math.atan(ady / adx);

@@ -86,3 +86,10 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
 #enemies { z-index: 3; }
 #foreground { z-index: 2; }
 #canvas { z-index: 1; }
+
+
+.towerInfoButton {
+    display: inline-block;
+    min-height: 70px;
+    min-width: 333px;
+}
