@@ -3,6 +3,9 @@ import Tower from "./Tower.js";
 export default class LinuxTower extends Tower {
     constructor(x, y) {
         super("../images/LinuxTransparent.png", 'Tux', x, y, "closest",12);
+        this.damage = 5;
+        this.cost = 200;
+        this.fire_rate = 1;
     }
 
     /*
@@ -23,4 +26,14 @@ export default class LinuxTower extends Tower {
         }
         return [target, min_d];
     }
+
+    upgrade() {
+        this.level++;
+        this.upgrade_cost *= 4;
+        this.damage += 1;
+        this.fire_rate += .5;
+        // Fix weird issues with decimals
+        // this.damage = Math.round(this.damage * 10) / 10;
+    }
+    
 }

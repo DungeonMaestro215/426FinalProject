@@ -2,6 +2,8 @@ import KMPEnemy from "./Model/KMPEnemy.js";
 import GameData from "./Model/GameData.js";
 import KrisEnemy from "./Model/KrisEnemy.js";
 import StottsEnemy from "./Model/StottsEnemy.js";
+import SnoeyinkEnemy from "./Model/SnoeyinkEnemy.js";
+import MunsellEnemy from "./Model/MunsellEnemy.js";
 
 export default class Controller {
     view;
@@ -62,12 +64,16 @@ export default class Controller {
             //randomly add either kmp or kris enemy
             let enemyRandomizer = Math.random();
             let newEnemy;
-            if (enemyRandomizer < .3) {
+            if (enemyRandomizer < .2) {
                 newEnemy = new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
-            } else if (enemyRandomizer >= .3 && enemyRandomizer < .65) {
+            } else if (enemyRandomizer >= .2 && enemyRandomizer < .4) {
                 newEnemy = new StottsEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
-            } else {
+            } else if (enemyRandomizer >= .4 && enemyRandomizer < .6) {
                 newEnemy = new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else if (enemyRandomizer >= .6 && enemyRandomizer < .8) {
+                newEnemy = new SnoeyinkEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else {
+                newEnemy = new MunsellEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             }
             // const newEnemy = Math.random() > 0.7 ? new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e)) : new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             this.enemies.push(newEnemy);
