@@ -2,6 +2,8 @@ import KMPEnemy from "./Model/KMPEnemy.js";
 import GameData from "./Model/GameData.js";
 import KrisEnemy from "./Model/KrisEnemy.js";
 import StottsEnemy from "./Model/StottsEnemy.js";
+import SnoeyinkEnemy from "./Model/SnoeyinkEnemy.js";
+import MunsellEnemy from "./Model/MunsellEnemy.js";
 
 export default class Controller {
     view;
@@ -62,14 +64,16 @@ export default class Controller {
             //randomly add either kmp or kris enemy
             let enemyRandomizer = Math.random();
             let newEnemy;
-            let startX = this.view.map.enemyPath[0][0];
-            let startY = this.view.map.enemyPath[0][1];
-            if (enemyRandomizer < .3) {
-                newEnemy = new KrisEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
-            } else if (enemyRandomizer >= .3 && enemyRandomizer < .65) {
-                newEnemy = new StottsEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
+            if (enemyRandomizer < .2) {
+                newEnemy = new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else if (enemyRandomizer >= .2 && enemyRandomizer < .4) {
+                newEnemy = new StottsEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else if (enemyRandomizer >= .4 && enemyRandomizer < .6) {
+                newEnemy = new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else if (enemyRandomizer >= .6 && enemyRandomizer < .8) {
+                newEnemy = new SnoeyinkEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             } else {
-                newEnemy = new KMPEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
+                newEnemy = new MunsellEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             }
             // const newEnemy = Math.random() > 0.7 ? new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e)) : new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             this.enemies.push(newEnemy);
@@ -186,10 +190,11 @@ export default class Controller {
     }
 
     toggleFastForward() {
-        const ffbutt = document.getElementById("fastforward");
+        const ffbutt = document.getElementById("fastForward");
         if (this.gameData.gameSpeed == 1) {
             this.gameData.gameSpeed = 2;
-            ffbutt.style.backgroundColor = 'gold';
+            ffbutt.style.backgroundColor = '#041148';
+            ffbutt.style.color = '#d2defc'
         } else {
             this.gameData.gameSpeed = 1;
             ffbutt.style.backgroundColor = 'white';

@@ -13,7 +13,7 @@ export default class Tower {
     bullet_v = 10;
     range = 150;
     level = 1;
-    damage = 1;
+    damage = .5;
     fire_rate = 1;
     kills = 0;
 
@@ -85,8 +85,12 @@ export default class Tower {
     upgrade() {
         this.upgrade_cost += this.upgrade_cost;
         this.level++;
-        this.damage += 5;
-        this.range += 20;
+        if (this.level === 2) {
+            this.damage += .5;
+        } else {
+            this.damage += 1;
+        }
+        this.range += 10;
     }
 
     clickHandler(x, y) {
