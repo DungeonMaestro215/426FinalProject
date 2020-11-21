@@ -1,8 +1,8 @@
 import Tower from "./Tower.js";
 
-export default class MortyTower extends Tower {
+export default class LinuxTower extends Tower {
     constructor(x, y) {
-        super("../images/mortytower.png", 'Morty Smith', x, y, "closest",12);
+        super("../images/LinuxTransparent.png", 'Tux', x, y, "closest",12);
     }
 
     /*

@@ -85,16 +85,6 @@ export default class Controller {
             }
         });
 
-        // if (this.gameData.elapsedTime % 9 === 0) {
-        //     //cause each tower to fire 1 shot at nearest enemy
-        //     for (let tower of this.towers) {
-        //         const projectile = tower.createProjectile(this.enemies, this.view.map.enemyPath);
-        //         if (projectile != undefined) {
-        //             this.projectiles.push(projectile);
-        //         }
-        //     }
-        // }
-
         // move every projectile
         this.projectiles.forEach(projectile => projectile.move());
         // Get rid of projectiles which go off screen
@@ -172,8 +162,9 @@ export default class Controller {
             // Remove all of the single use towers
             this.towers.forEach(tower => {
                 if (tower.targetType == 'single-use') { 
-                    this.view.removeTower(tower) 
+                    this.view.removeTower(tower);
                 }});
+            this.view.updateTowerInfo();
         }
     }
 
@@ -183,7 +174,8 @@ export default class Controller {
             this.enemies.findIndex((x) => x === enemy),
             1
         );
-        if (!this.gameData.health--) {
+        this.gameData.health -= enemy.damage // how much damage each enemy deals
+        if (this.gameData.health <= 0) {
             this.gameData.state = "LOST";
             this.view.initiateLossScreen();
         } else {

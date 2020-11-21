@@ -10,5 +10,6 @@ export default class KrisEnemy extends Enemy {
         this.health = 10;
         this.maxHealth = this.health;
         this.reward = 1;
+        this.damage = 1;
     }
 }

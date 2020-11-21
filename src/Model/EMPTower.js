@@ -8,6 +8,7 @@ export default class EMPTower extends Tower {
         this.damage = 1;
         this.fire_rate = .5;
         this.bullet_v = 5;
+        this.num_projectiles = 4;
     }
 
     createProjectile(enemies) {
@@ -22,11 +23,11 @@ export default class EMPTower extends Tower {
         }
 
         // Fire Several projectiles in a circle around the tower
-        const num_projectiles = 8;
-        const proj_angle = 2 * Math.PI / num_projectiles;
+        // this.num_projectiles;
+        const proj_angle = 2 * Math.PI / this.num_projectiles;
         const bullet_vxs = [];
         const bullet_vys = [];
-        for (let i = 0; i < num_projectiles; i++) {
+        for (let i = 0; i < this.num_projectiles; i++) {
             const bullet_vx = this.bullet_v * Math.cos(i * proj_angle);
             const bullet_vy = this.bullet_v * Math.sin(i * proj_angle);
             bullet_vxs.push(bullet_vx);
@@ -43,11 +44,13 @@ export default class EMPTower extends Tower {
     }
 
     upgrade() {
-        this.upgradeCounter++;
-        if (this.upgradeCounter >= 1) {
+        this.level++;
+        if (this.level >= 1) {
             this.upgrade_cost += 20;
         }
-        this.level++;
+        if (this.level % 2) {
+            this.num_projectiles += 2;
+        }
         this.damage += 1;
         // Fix weird issues with decimals
         // this.damage = Math.round(this.damage * 10) / 10;

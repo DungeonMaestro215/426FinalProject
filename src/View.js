@@ -1,6 +1,6 @@
 import FirstMap from "./Model/FirstMap.js";
-import AnimeGirlTower from "./Model/AnimeGirlTower.js";
-import MortyTower from "./Model/MortyTower.js"
+import MacTower from "./Model/MacTower.js";
+import LinuxTower from "./Model/LinuxTower.js"
 import LogicGateTower from "./Model/LogicGateTower.js";
 import EMPTower from "./Model/EMPTower.js";
 
@@ -29,7 +29,7 @@ export default class View {
         this.ctx = this.canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
-        let towerTypes = [new AnimeGirlTower(), new MortyTower(), new EMPTower(), new LogicGateTower()];
+        let towerTypes = [new MacTower(), new LinuxTower(), new EMPTower(), new LogicGateTower()];
         for(const towerType of towerTypes){
             document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
                 `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" src="${towerType.sprite}"/></div>`
@@ -142,7 +142,7 @@ export default class View {
         let [x, y] = getCursorPosition(this.canvas, e);
 
         // Can the tower be placed here?
-        if (this.isTowerPlacementGuideBlocked(x, y)) {
+        if (this.isTowerPlacementGuideBlocked(x - this.selectedTower.size / 2, y - this.selectedTower.size / 2)) {
             // If it is blocked, do nothing
             return;
         }
@@ -153,8 +153,8 @@ export default class View {
 
         // Generate new tower
         tower = new tower.constructor;
-        tower.x = x;
-        tower.y = y;
+        tower.x = x - this.selectedTower.size / 2;
+        tower.y = y - this.selectedTower.size / 2;
         this.controller.towers.push(tower);
 
         // render tower
@@ -162,7 +162,7 @@ export default class View {
         img.addEventListener(
             "load",
             () => {
-                this.ctx.drawImage(img, x, y, tower.size, tower.size);
+                this.ctx.drawImage(img, x - this.selectedTower.size / 2, y - this.selectedTower.size / 2, tower.size, tower.size);
                 // Clear tower placement guide box
                 this.towerplacement_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
@@ -186,14 +186,14 @@ export default class View {
         );
         let [x, y] = getCursorPosition(this.canvas, e);
 
-        const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
+        const isBlocked = this.isTowerPlacementGuideBlocked(x - this.selectedTower.size / 2, y - this.selectedTower.size / 2);
 
         const towerImage = new Image();
         towerImage.src = this.selectedTower.sprite;
         this.towerplacement_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
         this.towerplacement_ctx.beginPath();
-        this.towerplacement_ctx.arc(x + this.selectedTower.size / 2, y + this.selectedTower.size / 2, this.selectedTower.range, 0, 2 * Math.PI, false);
-        this.towerplacement_ctx.drawImage(towerImage, x, y, this.selectedTower.size, this.selectedTower.size);
+        this.towerplacement_ctx.arc(x, y, this.selectedTower.range, 0, 2 * Math.PI, false);
+        this.towerplacement_ctx.drawImage(towerImage, x - this.selectedTower.size / 2, y - this.selectedTower.size / 2, this.selectedTower.size, this.selectedTower.size);
         this.towerplacement_ctx.fill();
     };
 

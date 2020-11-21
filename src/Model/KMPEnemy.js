@@ -15,5 +15,6 @@ export default class KMPEnemy extends Enemy {
         this.health = 50;
         this.maxHealth = this.health;
         this.reward = 3;
+        this.damage = 3;
     }
 }

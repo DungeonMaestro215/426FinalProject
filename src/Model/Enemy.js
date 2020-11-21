@@ -10,6 +10,7 @@ export default class Enemy {
     endCallbacks = [];
     reward = 5;
     shot_by;
+    damage;
 
     constructor(sprite, startX,startY) {
         this.sprite = sprite;

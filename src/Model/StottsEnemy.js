@@ -10,5 +10,6 @@ export default class StottsEnemy extends Enemy {
         this.health = 20;
         this.maxHealth = this.health;
         this.reward = 2;
+        this.damage = 2;
     }
 }
