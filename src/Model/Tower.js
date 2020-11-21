@@ -4,7 +4,7 @@ export default class Tower {
     sprite;
     name;
     cost = 50;
-    upgrade_cost = 20;
+    upgrade_cost = 75;
     sell = 20;
     size = 55;
     x;
@@ -86,7 +86,7 @@ export default class Tower {
     upgrade() {
         this.upgradeCounter++;
         if (this.upgradeCounter >= 1) {
-            this.upgrade_cost += 20;
+            this.upgrade_cost += this.upgrade_cost;
         }
         this.level++;
         this.damage += 5;

@@ -1,6 +1,7 @@
 import KMPEnemy from "./Model/KMPEnemy.js";
 import GameData from "./Model/GameData.js";
 import KrisEnemy from "./Model/KrisEnemy.js";
+import StottsEnemy from "./Model/StottsEnemy.js";
 
 export default class Controller {
     view;
@@ -59,12 +60,16 @@ export default class Controller {
             ++this.gameData.enemiesSpawned < this.gameData.maxEnemies
         ) {
             //randomly add either kmp or kris enemy
-            const newEnemy =
-                Math.random() > 0.7
-                    ? new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e))
-                    : new KrisEnemy(3, 50, (e) =>
-                          this.enemyReachedEndHandler(e)
-                      );
+            let enemyRandomizer = Math.random();
+            let newEnemy;
+            if (enemyRandomizer < .3) {
+                newEnemy = new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else if (enemyRandomizer >= .3 && enemyRandomizer < .65) {
+                newEnemy = new StottsEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            } else {
+                newEnemy = new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+            }
+            // const newEnemy = Math.random() > 0.7 ? new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e)) : new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             this.enemies.push(newEnemy);
         }
 

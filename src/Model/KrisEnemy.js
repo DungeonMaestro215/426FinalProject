@@ -7,7 +7,8 @@ export default class KrisEnemy extends Enemy {
         super(img, startX, startY);
         this.addEndCallback(endHandler);
         this.size = 30;
-        this.health = 20;
+        this.health = 10;
         this.maxHealth = this.health;
+        this.reward = 1;
     }
 }
