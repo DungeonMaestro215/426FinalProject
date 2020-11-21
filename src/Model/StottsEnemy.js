@@ -3,7 +3,7 @@ import Enemy from "./Enemy.js";
 export default class StottsEnemy extends Enemy {
     constructor(startX, startY, endHandler) {
         let img = new Image();   // Create new img element
-        img.src = "./images/Stotts.jpg"; // Set source path
+        img.src = "./images/Stotts.png"; // Set source path
         super(img, startX, startY);
         this.addEndCallback(endHandler);
         this.size = 30;
