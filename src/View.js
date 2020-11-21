@@ -3,6 +3,7 @@ import MacTower from "./Model/MacTower.js";
 import LinuxTower from "./Model/LinuxTower.js"
 import LogicGateTower from "./Model/LogicGateTower.js";
 import EMPTower from "./Model/EMPTower.js";
+import SecondMap from "./Model/SecondMap.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
@@ -16,7 +17,8 @@ export default class View {
     drawing;
     raf;
     clickedTower;
-    map = new FirstMap();
+    // map = new FirstMap();
+    map = new SecondMap();
 
     constructor() {
         //Create map object and load image to the canvas
@@ -36,6 +38,10 @@ export default class View {
             );
             document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
         }
+
+        this.towerplacement_canvas.addEventListener('click', (e) => {
+            console.log(getCursorPosition(this.towerplacement_canvas, e));
+        })
 
         // Allow user to click on placed towers
         this.towerplacement_canvas.addEventListener('click', (e) => {

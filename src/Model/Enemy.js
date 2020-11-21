@@ -31,13 +31,39 @@ export default class Enemy {
     }
 
     getVx(path){
-        if(path[this.currentNode][2] === 'u' ||  path[this.currentNode][2] === 'd') return 0;
-        return (path[this.currentNode][2] === 'l') ? -1 * this.velocity : this.velocity;
+        switch (path[this.currentNode][2]) {
+            case 'u':
+            case 'd':
+                return 0;
+            case 'l':
+                return -1 * this.velocity;
+            case 'r':
+                return this.velocity;
+            case 'ul':
+            case 'dl':
+                return -Math.sqrt(2) * this.velocity;
+            case 'ur':
+            case 'dr':
+                return Math.sqrt(2) * this.velocity;
+        }
     }
 
     getVy(path){
-        if(path[this.currentNode][2] === 'l' || path[this.currentNode][2] === 'r') return 0;
-        return (path[this.currentNode][2] === 'u') ? -1 * this.velocity : this.velocity;
+        switch (path[this.currentNode][2]) {
+            case 'l':
+            case 'r':
+                return 0;
+            case 'u':
+                return -1 * this.velocity;
+            case 'd':
+                return this.velocity;
+            case 'ul':
+            case 'ur':
+                return -Math.sqrt(2) * this.velocity;
+            case 'dl':
+            case 'dr':
+                return Math.sqrt(2) * this.velocity;
+        }
     }
 
     getReward() {
@@ -81,18 +107,24 @@ export default class Enemy {
                     this.y+=this.velocity;
                 }
                 break;
+            case 'dl':
+            case 'ul':
             case 'l':
                 if(this.x <= path[this.currentNode+1][0]) {
                     this.currentNode++;
                 } else {
-                    this.x-=this.velocity;
+                    this.x+=this.getVx(path);
+                    this.y+=this.getVy(path);
                 }
                 break;
+            case 'dr':
+            case 'ur':
             case 'r':
                 if(this.x >= path[this.currentNode+1][0]) {
                     this.currentNode++;
                 } else {
-                    this.x+=this.velocity;
+                    this.x+=this.getVx(path);
+                    this.y+=this.getVy(path);
                 }
                 break;
         }

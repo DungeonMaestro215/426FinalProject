@@ -62,12 +62,14 @@ export default class Controller {
             //randomly add either kmp or kris enemy
             let enemyRandomizer = Math.random();
             let newEnemy;
+            let startX = this.view.map.enemyPath[0][0];
+            let startY = this.view.map.enemyPath[0][1];
             if (enemyRandomizer < .3) {
-                newEnemy = new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+                newEnemy = new KrisEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             } else if (enemyRandomizer >= .3 && enemyRandomizer < .65) {
-                newEnemy = new StottsEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+                newEnemy = new StottsEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             } else {
-                newEnemy = new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
+                newEnemy = new KMPEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             }
             // const newEnemy = Math.random() > 0.7 ? new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e)) : new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             this.enemies.push(newEnemy);
