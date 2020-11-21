@@ -16,7 +16,6 @@ export default class Tower {
     damage = 1;
     fire_rate = 1;
     kills = 0;
-    upgradeCounter = 0;
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
@@ -84,10 +83,7 @@ export default class Tower {
     }
 
     upgrade() {
-        this.upgradeCounter++;
-        if (this.upgradeCounter >= 1) {
-            this.upgrade_cost += this.upgrade_cost;
-        }
+        this.upgrade_cost += this.upgrade_cost;
         this.level++;
         this.damage += 5;
         this.range += 20;

@@ -45,9 +45,7 @@ export default class EMPTower extends Tower {
 
     upgrade() {
         this.level++;
-        if (this.level >= 1) {
-            this.upgrade_cost += 20;
-        }
+        this.upgrade_cost += 20;
         if (this.level % 2) {
             this.num_projectiles += 2;
         }
