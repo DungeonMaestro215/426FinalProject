@@ -11,6 +11,6 @@ window.onload = () => {
         .getElementById("roundStart")
         .addEventListener("click", controller.startRound.bind(controller));
     document
-        .getElementById("fastforward")
+        .getElementById("fastForward")
         .addEventListener("click", controller.toggleFastForward.bind(controller));
 }

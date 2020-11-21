@@ -190,10 +190,11 @@ export default class Controller {
     }
 
     toggleFastForward() {
-        const ffbutt = document.getElementById("fastforward");
+        const ffbutt = document.getElementById("fastForward");
         if (this.gameData.gameSpeed == 1) {
             this.gameData.gameSpeed = 2;
-            ffbutt.style.backgroundColor = 'gold';
+            ffbutt.style.backgroundColor = '#041148';
+            ffbutt.style.color = '#d2defc'
         } else {
             this.gameData.gameSpeed = 1;
             ffbutt.style.backgroundColor = 'white';
