@@ -5,6 +5,7 @@ import LogicGateTower from "./Model/LogicGateTower.js";
 import EMPTower from "./Model/EMPTower.js";
 import SecondMap from "./Model/SecondMap.js";
 import WindowsTower from "./Model/WindowsTower.js";
+import BitcoinTower from "./Model/BitcoinTower.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
@@ -32,7 +33,7 @@ export default class View {
         this.ctx = this.canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
-        let towerTypes = [new MacTower(), new LinuxTower(), new WindowsTower(),new EMPTower(), new LogicGateTower()];
+        let towerTypes = [new MacTower(), new LinuxTower(), new WindowsTower(), new EMPTower(), new BitcoinTower, new LogicGateTower()];
         for(const towerType of towerTypes){
             document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
                 `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" class="Tower" src="${towerType.sprite}"/></div>`
