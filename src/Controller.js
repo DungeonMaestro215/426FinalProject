@@ -206,6 +206,7 @@ export default class Controller {
         } else {
             this.gameData.gameSpeed = 1;
             ffbutt.style.backgroundColor = 'white';
+            ffbutt.style.color = 'black';
         }
     }
 }
