@@ -30,6 +30,19 @@ html {
     margin-top: 20px;
 }
 
+#control span {
+    margin-left: 4px;
+    margin-right: 4px;
+    font-weight: bold;
+}
+
+#control {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-left: 5px
+}
 
 .row {
     float: left;
