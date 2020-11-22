@@ -311,6 +311,17 @@ export default class View {
                     if(this.controller.gameData.money >= special_upgrade.cost) {
                         this.controller.gameData.money -= special_upgrade.cost;
                         this.clickedTower.applyUpgrade(special_upgrade)
+                        this.ctx.clearRect(this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                        let img = new Image();
+                        img.addEventListener(
+                            "load",
+                            () => {
+                                this.ctx.drawImage(img, this.clickedTower.x,this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                            },
+                            false
+                        );
+                        img.src = this.clickedTower.sprite;
+
                     }
                 });
                 info.append(special_upgrade_butt);

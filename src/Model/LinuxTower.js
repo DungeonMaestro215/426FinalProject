@@ -6,6 +6,23 @@ export default class LinuxTower extends Tower {
         this.damage = 5;
         this.cost = 200;
         this.fire_rate = 1;
+        this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
+        this.proj_size=25;
+        this.special_upgrades.push({
+            name: "Install Gentoo",
+            description: "A secret compiler flag allows this penguin to penetrate enemy armor.",
+            cost: 1000,
+            requiredLevel: 4,
+            available: true,
+            effect: () => {
+                if(this.special_upgrades.find(x => x.name==="Install Gentoo").available){
+                    this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one.png" : "../images/zero.png";
+                    this.sprite = "../images/GentooLinux.png"
+                    this.armor_penetration = true;
+                    this.special_upgrades.find(x => x.name==="Install Gentoo").available = false;
+                }
+            }
+        })
     }
 
     /*
