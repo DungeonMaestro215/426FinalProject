@@ -7,8 +7,42 @@ html {
 }
 
 .navbar-item {
-    color: white;
+    color: #d2defc;
     font-weight: bold;
+}
+
+.Tower {
+    opacity: 50%;
+    transition: .1s linear;
+}
+
+.Tower:hover {
+    opacity: 100%;
+    border-radius: 20%;
+    transition: .1s linear;
+    /* box-shadow: 0px 0px 50px 1px yellow; */
+}
+
+#roundStart {
+    transition: .1s linear;
+}
+
+#roundStart:hover {
+    background-color: #041148;
+    color: #d2defc;
+    transition: .1s linear;
+    /* box-shadow: 0px 0px 50px 1px yellow; */
+}
+
+#fastForward {
+    transition: .1s linear;
+}
+
+#fastForward:hover {
+    background-color: #041148;
+    color: #d2defc;
+    transition: .1s linear;
+    /* box-shadow: 0px 0px 50px 1px yellow; */
 }
 
 .square {
@@ -75,3 +109,57 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
 #enemies { z-index: 3; }
 #foreground { z-index: 2; }
 #canvas { z-index: 1; }
+
+
+.towerInfoButton {
+    display: inline-block;
+    min-height: 70px;
+    min-width: 333px;
+}
+
+#quote-wrapper {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    min-width: 100%;
+    animation: fade 20s infinite;
+}
+
+#quote {
+    position: relative;
+    max-width: 40%;
+    animation: moveRight 20s infinite;  
+}
+
+#author {
+    position: relative;
+    animation: moveLeft 20s infinite; 
+}
+
+@keyframes moveRight {
+    0% {left: 10%}
+    50% {left: 20%}
+    100% {left: 40%}
+}
+
+@keyframes fade {
+    0% {opacity: 0%}
+    50% {opacity: 100%}
+    90% {opacity: 0%}
+    100% {opacity: 0%}
+}
+
+@keyframes moveLeft {
+    0% {right: 30%}
+    50% {right: 40%}
+    100% {right: 60%}
+}
+
+/* .fade-in {
+    opacity: 100%;
+    transition: 3s linear;
+}
+
+.fade-out {
+    opacity: 0%;
+    transition: 2s linear;
+} */

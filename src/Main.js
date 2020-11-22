@@ -10,12 +10,12 @@ window.onload = async () => {
     view.draw();
     view.setMoney(controller.gameData.money);
     document
-        .getElementById("fastforward")
+        .getElementById("fastForward")
         .addEventListener("click", controller.toggleFastForward.bind(controller));
     document
         .getElementById("roundStart")
         .addEventListener("click", controller.startRound.bind(controller));
-    
+
     generateLeaderboard();
     const user = await getUser();
     controller.loss_handlers.push((score) => writeScore(user,score));
@@ -33,7 +33,7 @@ async function writeScore(user_id, score){
             headers: {"Authorization": "Bearer " + token, "Content-Type": "Application/JSON"},
             data: score
         });
-    } 
+    }
 }
 
 

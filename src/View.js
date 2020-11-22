@@ -1,8 +1,11 @@
 import FirstMap from "./Model/FirstMap.js";
-import AnimeGirlTower from "./Model/AnimeGirlTower.js";
-import MortyTower from "./Model/MortyTower.js"
+import MacTower from "./Model/MacTower.js";
+import LinuxTower from "./Model/LinuxTower.js"
 import LogicGateTower from "./Model/LogicGateTower.js";
 import EMPTower from "./Model/EMPTower.js";
+import SecondMap from "./Model/SecondMap.js";
+import WindowsTower from "./Model/WindowsTower.js";
+import BitcoinTower from "./Model/BitcoinTower.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
@@ -16,7 +19,8 @@ export default class View {
     drawing;
     raf;
     clickedTower;
-    map = new FirstMap();
+    // map = new FirstMap();
+    map = new SecondMap();
 
     constructor() {
         //Create map object and load image to the canvas
@@ -29,13 +33,17 @@ export default class View {
         this.ctx = this.canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
         //Create buttons in the UI for each type of tower
-        let towerTypes = [new AnimeGirlTower(), new MortyTower(), new EMPTower(), new LogicGateTower()];
+        let towerTypes = [new MacTower(), new LinuxTower(), new WindowsTower(), new EMPTower(), new BitcoinTower, new LogicGateTower()];
         for(const towerType of towerTypes){
             document.getElementById("towerSidebar").insertAdjacentHTML("beforeend",
-                `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" src="${towerType.sprite}"/></div>`
+                `<div><img height="50px" width="50px" alt="${towerType.constructor.name}" id="${towerType.constructor.name}" class="Tower" src="${towerType.sprite}"/></div>`
             );
             document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
         }
+
+        // this.towerplacement_canvas.addEventListener('click', (e) => {
+        //     console.log(getCursorPosition(this.towerplacement_canvas, e));
+        // })
 
         // Allow user to click on placed towers
         this.towerplacement_canvas.addEventListener('click', (e) => {
@@ -55,6 +63,9 @@ export default class View {
                 this.updateTowerInfo();
             }
         });
+
+        this.updateQuote();
+        setInterval(() => this.updateQuote(), 20000);
     }
 
     setRound(round) {
@@ -65,7 +76,7 @@ export default class View {
         document.getElementById("lives").innerText = `Lives: ${lives}`;
     }
     setMoney(money) {
-        document.getElementById("money").innerText = `Money: ${money}`;
+        document.getElementById("money").innerText = `Bitcoin: ${money}`;
     }
 
     toggleDraw() {
@@ -123,6 +134,13 @@ export default class View {
                 this.listener = (e) => this.renderTowerFromMouseEvent(e, tower)
             );
         }
+        const info = document.querySelector('#towerInfo');
+        if (this.selectedTower) {
+            info.innerHTML = "";
+            info.append(this.selectedTower.renderSalesPitch());
+        } else {
+            info.innerHTML = "";
+        }
     }
 
     /*
@@ -142,7 +160,7 @@ export default class View {
         let [x, y] = getCursorPosition(this.canvas, e);
 
         // Can the tower be placed here?
-        if (this.isTowerPlacementGuideBlocked(x, y)) {
+        if (this.isTowerPlacementGuideBlocked(x - this.selectedTower.size / 2, y - this.selectedTower.size / 2)) {
             // If it is blocked, do nothing
             return;
         }
@@ -153,8 +171,8 @@ export default class View {
 
         // Generate new tower
         tower = new tower.constructor;
-        tower.x = x;
-        tower.y = y;
+        tower.x = x - this.selectedTower.size / 2;
+        tower.y = y - this.selectedTower.size / 2;
         this.controller.towers.push(tower);
 
         // render tower
@@ -162,7 +180,7 @@ export default class View {
         img.addEventListener(
             "load",
             () => {
-                this.ctx.drawImage(img, x, y, tower.size, tower.size);
+                this.ctx.drawImage(img, x - this.selectedTower.size / 2, y - this.selectedTower.size / 2, tower.size, tower.size);
                 // Clear tower placement guide box
                 this.towerplacement_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
@@ -186,14 +204,14 @@ export default class View {
         );
         let [x, y] = getCursorPosition(this.canvas, e);
 
-        const isBlocked = this.isTowerPlacementGuideBlocked(x, y);
+        const isBlocked = this.isTowerPlacementGuideBlocked(x - this.selectedTower.size / 2, y - this.selectedTower.size / 2);
 
         const towerImage = new Image();
         towerImage.src = this.selectedTower.sprite;
         this.towerplacement_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
         this.towerplacement_ctx.beginPath();
-        this.towerplacement_ctx.arc(x + this.selectedTower.size / 2, y + this.selectedTower.size / 2, this.selectedTower.range, 0, 2 * Math.PI, false);
-        this.towerplacement_ctx.drawImage(towerImage, x, y, this.selectedTower.size, this.selectedTower.size);
+        this.towerplacement_ctx.arc(x, y, this.selectedTower.range, 0, 2 * Math.PI, false);
+        this.towerplacement_ctx.drawImage(towerImage, x - this.selectedTower.size / 2, y - this.selectedTower.size / 2, this.selectedTower.size, this.selectedTower.size);
         this.towerplacement_ctx.fill();
     };
 
@@ -258,10 +276,21 @@ export default class View {
         }
     }
 
+    previousTowerUpdateState = {};
+
     /* Display information about the selected tower.
      * Also include buttons that allow player to upgrade or remove tower.
      */
     updateTowerInfo() {
+        if(this.previousTowerUpdateState.clickedTower === this.clickedTower
+            && this.previousTowerUpdateState.money === this.controller.gameData.money
+            && (this.clickedTower == null || this.previousTowerUpdateState.upgrade_cost === this.clickedTower.upgrade_cost)) {
+            return;
+        }
+        this.previousTowerUpdateState.clickedTower = this.clickedTower;
+        this.previousTowerUpdateState.money = this.controller.gameData.money;
+        this.previousTowerUpdateState.upgrade_cost = this.clickedTower != null ? this.clickedTower.upgrade_cost : null;
+
         const info = document.querySelector('#towerInfo');
         if (this.clickedTower) {
             info.innerHTML = "";
@@ -269,22 +298,58 @@ export default class View {
 
             // Upgrade and remove buttons
             const upgrade_butt = document.createElement('button');
-            upgrade_butt.classList.add('button');
+            upgrade_butt.classList.add('button', 'towerInfoButton');
             if (this.controller.gameData.money < this.clickedTower.upgrade_cost) {
                 upgrade_butt.classList.add('is-dark');
             } else {
                 upgrade_butt.classList.add('is-success');
             }
-            upgrade_butt.innerText = `Upgrade: $${this.clickedTower.upgrade_cost}`;
+            upgrade_butt.innerText = `Upgrade: ₿${this.clickedTower.upgrade_cost}`;
             upgrade_butt.addEventListener('click', () => this.upgradeTower());
 
             const remove_butt = document.createElement('button');
-            remove_butt.classList.add('button');
+            remove_butt.classList.add('button', 'towerInfoButton');
             remove_butt.classList.add('is-danger');
-            remove_butt.innerText = `Sell: $${this.clickedTower.sell}`;
+            remove_butt.innerText = `Sell: ₿${this.clickedTower.sell}`;
             remove_butt.addEventListener('click', () => this.sellTower());
 
             info.append(upgrade_butt);
+
+            //create a button for named upgrades if the tower has one and meets required level
+            if(this.clickedTower.special_upgrades.length > 0
+            && this.clickedTower.special_upgrades[0].requiredLevel <= this.clickedTower.level && this.clickedTower.special_upgrades[0].available
+                ) {
+                const special_upgrade = this.clickedTower.special_upgrades[0];
+                const special_upgrade_butt = document.createElement('button')
+                special_upgrade_butt.classList.add('button', 'towerInfoButton');
+                special_upgrade_butt.style = "height: 90px"
+                if (this.controller.gameData.money < special_upgrade.cost) {
+                    special_upgrade_butt.classList.add('is-dark');
+                } else {
+                    special_upgrade_butt.classList.add('is-success');
+                }
+                special_upgrade_butt.innerHTML = special_upgrade.name + " <div style='font-size: 9px; max-width: 300px; white-space: pre-wrap'>" + special_upgrade.description +" </div>₿" + special_upgrade.cost
+                special_upgrade_butt.addEventListener('click', () => {
+                    if(this.controller.gameData.money >= special_upgrade.cost) {
+                        this.controller.gameData.money -= special_upgrade.cost;
+                        this.clickedTower.applyUpgrade(special_upgrade)
+                        this.ctx.clearRect(this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                        let img = new Image();
+                        img.addEventListener(
+                            "load",
+                            () => {
+                                this.ctx.drawImage(img, this.clickedTower.x,this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                            },
+                            false
+                        );
+                        img.src = this.clickedTower.sprite;
+
+                    }
+                });
+                info.append(special_upgrade_butt);
+            }
+
+
             info.append(remove_butt);
         } else {
             info.innerHTML = "";
@@ -292,6 +357,7 @@ export default class View {
     }
 
     upgradeTower() {
+        console.log(this.controller.gameData.money < this.clickedTower.upgrade_cost);
         if (this.controller.gameData.money < this.clickedTower.upgrade_cost) {
             return;
         }
@@ -351,6 +417,33 @@ export default class View {
             die_raf = window.requestAnimationFrame(die);
         };
         window.requestAnimationFrame(die);
+    }
+
+    // Quotes
+    getQuotes() {
+        if (!this.quotes) {
+            this.quotes = axios({
+                method: 'get',
+                url: 'https://type.fit/api/quotes'
+            })
+        }
+        return this.quotes;
+    }
+    updateQuote() {
+        const quote_wrapper = document.getElementById("quote-wrapper");
+        const quote_div = document.getElementById("quote");
+        const author_div = document.getElementById("author");
+
+        this.getQuotes().then((quotes) => {
+            const rand = Math.round(Math.random() * quotes.data.length);
+            const quote = quotes.data[rand];
+            quote_div.innerHTML = `<p>${quote.text}</p>`;
+            if (quote.author) {
+                author_div.innerHTML = `<p>-${quote.author}</p>`;
+            } else {
+                author_div.innerHTML = `<p>-Anonymous</p>`;
+            }
+        });
     }
 }
 
