@@ -5,6 +5,8 @@ export default class MacTower extends Tower {
         super("../images/MacLogo.png", 'Mac', x, y, "first", 10);
         this.range = 200;
         this.fire_rate = 2;
+        this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
+        this.proj_size=25;
         this.special_upgrades.push({
             name: "ARM Instruction Set",
             description: "Optimizations allowed by the new instruction set increase tower attack speed by 15%.",
