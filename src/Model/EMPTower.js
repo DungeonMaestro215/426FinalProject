@@ -9,6 +9,7 @@ export default class EMPTower extends Tower {
         this.fire_rate = .5;
         this.bullet_v = 5;
         this.num_projectiles = 4;
+        this.description = 'A "shocking" area of effect tower.';
     }
 
     createProjectile(enemies) {

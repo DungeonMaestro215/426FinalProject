@@ -7,6 +7,7 @@ export default class BitcoinTower extends Tower {
         this.range = this.size;
         this.damage = 5;
         this.fire_rate = .1;
+        this.description = 'Farms some coin for ya, but watch out... Those professors have some grubby mitts.';
     }
 
     // Create a bitcoin

@@ -18,6 +18,7 @@ export default class Tower {
     kills = 0;
     proj_size = 10
     special_upgrades = [];
+    description = '';
     get_bullet_sprite = () => "../images/bubble.webp";
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
@@ -116,6 +117,12 @@ export default class Tower {
     renderTowerInfo() {
         const info = document.createElement('div');
         info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Kills: ${this.kills}</p><p>Damage: ${this.damage}</p>`;
+        return info;
+    }
+
+    renderSalesPitch() {
+        const info = document.createElement('div');
+        info.innerHTML = `<p>Tower: ${this.name}</p><p>Cost: ${this.cost}</p><p>Damage: ${this.damage}</p><p>Fire Rate: ${this.fire_rate}</p><p>Desc: ${this.description}</p>`;
         return info;
     }
 

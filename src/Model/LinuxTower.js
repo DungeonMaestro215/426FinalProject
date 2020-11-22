@@ -6,6 +6,7 @@ export default class LinuxTower extends Tower {
         this.damage = 5;
         this.cost = 200;
         this.fire_rate = 1;
+        this.description = 'Finely dressed penguin ready to DESTROY!';
         this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
         this.proj_size=25;
         this.special_upgrades.push({
@@ -48,6 +49,7 @@ export default class LinuxTower extends Tower {
         this.level++;
         this.upgrade_cost *= 4;
         this.damage += 1;
+        this.range += 5;
         this.fire_rate += .5;
         // Fix weird issues with decimals
         // this.damage = Math.round(this.damage * 10) / 10;

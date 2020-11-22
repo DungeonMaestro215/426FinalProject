@@ -76,7 +76,7 @@ export default class View {
         document.getElementById("lives").innerText = `Lives: ${lives}`;
     }
     setMoney(money) {
-        document.getElementById("money").innerText = `Money: ${money}`;
+        document.getElementById("money").innerText = `Bitcoin: ${money}`;
     }
 
     toggleDraw() {
@@ -133,6 +133,13 @@ export default class View {
                 "mousedown",
                 this.listener = (e) => this.renderTowerFromMouseEvent(e, tower)
             );
+        }
+        const info = document.querySelector('#towerInfo');
+        if (this.selectedTower) {
+            info.innerHTML = "";
+            info.append(this.selectedTower.renderSalesPitch());
+        } else {
+            info.innerHTML = "";
         }
     }
 
@@ -286,13 +293,13 @@ export default class View {
             } else {
                 upgrade_butt.classList.add('is-success');
             }
-            upgrade_butt.innerText = `Upgrade: $${this.clickedTower.upgrade_cost}`;
+            upgrade_butt.innerText = `Upgrade: ₿${this.clickedTower.upgrade_cost}`;
             upgrade_butt.addEventListener('click', () => this.upgradeTower());
 
             const remove_butt = document.createElement('button');
             remove_butt.classList.add('button', 'towerInfoButton');
             remove_butt.classList.add('is-danger');
-            remove_butt.innerText = `Sell: $${this.clickedTower.sell}`;
+            remove_butt.innerText = `Sell: ₿${this.clickedTower.sell}`;
             remove_butt.addEventListener('click', () => this.sellTower());
 
             info.append(upgrade_butt);
@@ -310,7 +317,7 @@ export default class View {
                 } else {
                     special_upgrade_butt.classList.add('is-success');
                 }
-                special_upgrade_butt.innerHTML = special_upgrade.name + " <div style='font-size: 9px; max-width: 300px; white-space: pre-wrap'>" + special_upgrade.description +" </div>$" + special_upgrade.cost
+                special_upgrade_butt.innerHTML = special_upgrade.name + " <div style='font-size: 9px; max-width: 300px; white-space: pre-wrap'>" + special_upgrade.description +" </div>₿" + special_upgrade.cost
                 special_upgrade_butt.addEventListener('click', () => {
                     if(this.controller.gameData.money >= special_upgrade.cost) {
                         this.controller.gameData.money -= special_upgrade.cost;
