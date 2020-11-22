@@ -6,7 +6,6 @@ export default class StottsEnemy extends Enemy {
         img.src = "./images/Stotts.png"; // Set source path
         super(img, startX, startY);
         this.addEndCallback(endHandler);
-        this.size = 30;
         this.health = 20;
         this.maxHealth = this.health;
         this.reward = 2;

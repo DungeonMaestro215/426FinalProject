@@ -4,6 +4,7 @@ import KrisEnemy from "./Model/KrisEnemy.js";
 import StottsEnemy from "./Model/StottsEnemy.js";
 import SnoeyinkEnemy from "./Model/SnoeyinkEnemy.js";
 import MunsellEnemy from "./Model/MunsellEnemy.js";
+import BossEnemy from "./Model/BossEnemy.js";
 
 export default class Controller {
     view;
@@ -63,28 +64,42 @@ export default class Controller {
         }
 
         //spawn enemies
+        const startX = this.view.map.enemyPath[0][0];
+        const startY = this.view.map.enemyPath[0][1];
+        const max_bosses = Math.floor(this.gameData.round / 10);
         if (
             this.gameData.elapsedTime % Math.ceil(30/this.gameData.spawnSpeed) === 0 &&
-            ++this.gameData.enemiesSpawned < this.gameData.maxEnemies
+            ++this.gameData.enemiesSpawned < this.gameData.maxEnemies - max_bosses 
         ) {
             //randomly add either kmp or kris enemy
             let enemyRandomizer = Math.random();
             let newEnemy;
-            let startX = this.view.map.enemyPath[0][0];
-            let startY = this.view.map.enemyPath[0][1];
             if (enemyRandomizer < .2) {
                 newEnemy = new KrisEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
-            } else if (enemyRandomizer >= .2 && enemyRandomizer < .4) {
+            } else if (enemyRandomizer < .4) {
                 newEnemy = new StottsEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
-            } else if (enemyRandomizer >= .4 && enemyRandomizer < .6) {
+            } else if (enemyRandomizer < .6) {
                 newEnemy = new KMPEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
-            } else if (enemyRandomizer >= .6 && enemyRandomizer < .8) {
+            } else if (enemyRandomizer < .8) {
                 newEnemy = new SnoeyinkEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             } else {
                 newEnemy = new MunsellEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             }
             // const newEnemy = Math.random() > 0.7 ? new KMPEnemy(3, 50, (e) => this.enemyReachedEndHandler(e)) : new KrisEnemy(3, 50, (e) => this.enemyReachedEndHandler(e));
             this.enemies.push(newEnemy);
+        }
+
+        if (
+            this.gameData.elapsedTime % Math.ceil(30/this.gameData.spawnSpeed) === 0 &&
+            this.gameData.round >= 1 && 
+            this.gameData.enemiesSpawned <= this.gameData.maxEnemies &&
+            this.gameData.enemiesSpawned > this.gameData.maxEnemies - max_bosses
+        ) {
+            this.gameData.enemiesSpawned++;
+            const boss_randomizer = Math.random();
+            if (boss_randomizer > .5) {
+                this.enemies.push(new BossEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e)));
+            }
         }
 
         this.towers.forEach(tower => {

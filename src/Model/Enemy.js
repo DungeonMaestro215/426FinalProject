@@ -81,7 +81,7 @@ export default class Enemy {
         
         // Health Bar
         const mapped_health = this.size / this.maxHealth * this.health;
-        context.fillStyle = mapped_health > .25 * this.maxHealth ? 'rgba(0, 255, 0, .7)' : 'rgba(255, 0, 0, .7)';
+        context.fillStyle = mapped_health > .25 * this.size ? 'rgba(0, 255, 0, .7)' : 'rgba(255, 0, 0, .7)';
         context.fillRect(this.x, this.y - 10, mapped_health, 5);
     }
 

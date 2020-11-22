@@ -6,7 +6,6 @@ export default class MunsellEnemy extends Enemy {
         img.src = "./images/Munsell.png"; // Set source path
         super(img, startX, startY);
         this.addEndCallback(endHandler);
-        this.size = 30;
         this.health = 50;
         this.maxHealth = this.health;
         this.reward = 5;

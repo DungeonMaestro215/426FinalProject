@@ -65,7 +65,7 @@ export default class View {
         });
 
         this.updateQuote();
-        setInterval(() => this.updateQuote(), 15000);
+        setInterval(() => this.updateQuote(), 20000);
     }
 
     setRound(round) {

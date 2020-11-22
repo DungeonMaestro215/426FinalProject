@@ -98,18 +98,18 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
     margin-top: 50px;
     margin-bottom: 50px;
     min-width: 100%;
-    animation: fade 15s infinite;
+    animation: fade 20s infinite;
 }
 
 #quote {
     position: relative;
     max-width: 40%;
-    animation: moveRight 15s infinite;  
+    animation: moveRight 20s infinite;  
 }
 
 #author {
     position: relative;
-    animation: moveLeft 15s infinite; 
+    animation: moveLeft 20s infinite; 
 }
 
 @keyframes moveRight {

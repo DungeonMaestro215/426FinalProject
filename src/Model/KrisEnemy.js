@@ -6,7 +6,6 @@ export default class KrisEnemy extends Enemy {
         img.src = "./images/KrisJordan.png"; // Set source path
         super(img, startX, startY);
         this.addEndCallback(endHandler);
-        this.size = 30;
         this.health = 10;
         this.maxHealth = this.health;
         this.reward = 1;
