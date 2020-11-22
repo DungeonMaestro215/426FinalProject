@@ -276,10 +276,21 @@ export default class View {
         }
     }
 
+    previousTowerUpdateState = {};
+
     /* Display information about the selected tower.
      * Also include buttons that allow player to upgrade or remove tower.
      */
     updateTowerInfo() {
+        if(this.previousTowerUpdateState.clickedTower === this.clickedTower
+            && this.previousTowerUpdateState.money === this.controller.gameData.money
+            && (this.clickedTower == null || this.previousTowerUpdateState.upgrade_cost === this.clickedTower.upgrade_cost)) {
+            return;
+        }
+        this.previousTowerUpdateState.clickedTower = this.clickedTower;
+        this.previousTowerUpdateState.money = this.controller.gameData.money;
+        this.previousTowerUpdateState.upgrade_cost = this.clickedTower != null ? this.clickedTower.upgrade_cost : null;
+
         const info = document.querySelector('#towerInfo');
         if (this.clickedTower) {
             info.innerHTML = "";
@@ -346,6 +357,7 @@ export default class View {
     }
 
     upgradeTower() {
+        console.log(this.controller.gameData.money < this.clickedTower.upgrade_cost);
         if (this.controller.gameData.money < this.clickedTower.upgrade_cost) {
             return;
         }
