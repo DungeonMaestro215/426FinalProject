@@ -388,6 +388,7 @@ export default class View {
 
     initiateLossScreen() {
         const foreground_ctx = this.foreground.getContext("2d");
+        this.foreground.style = "z-index: 99 !important";
         let start_time = 0;
         let die_raf;
         const die = (timestamp) => {

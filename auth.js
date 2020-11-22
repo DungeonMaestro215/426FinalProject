@@ -3,14 +3,20 @@ const backend_url = 'https://unc-td.herokuapp.com';
 async function getUser() {
     let token;
     if ((token = localStorage.getItem("auth_token")) != null && token !== "null") {
-        const x = await axios({
-            method: 'post',
-            url: backend_url + '/checkToken',
-            headers: {Authorization: 'Bearer ' + token},
-            data: {
-                token: token,
-            }
-        })
+        let x;
+        try {
+            x = await axios({
+                method: 'post',
+                url: backend_url + '/checkToken',
+                headers: {Authorization: 'Bearer ' + token},
+                data: {
+                    token: token,
+                }
+            })
+        } catch(e){
+            localStorage.removeItem("auth_token");
+            return;
+        }
         const profile = await axios({
             method: 'get',
             url: backend_url + '/users/' + x.data,

@@ -43,7 +43,7 @@ async function generateLeaderboard() {
         url: backend_url + "/scores?limit=20"
     })
     for(const score of leaderboard.data){
-        document.getElementById('leaderboard').insertAdjacentHTML('beforeend', `<p>${score.username + " " + score.score + " " + score.timestamp}</p>`)
+        document.getElementById('leaderboard').insertAdjacentHTML('beforeend', `<p>${score.username + " " + score.score + " " + score.timestamp.split("T")[0]}</p>`)
 
     }
     const modal = document.getElementById("leaderboard_modal");

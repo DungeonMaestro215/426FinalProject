@@ -211,11 +211,13 @@ export default class Controller {
             this.enemies.findIndex((x) => x === enemy),
             1
         );
+        //enemy.damage = 50;
         this.gameData.health = this.gameData.health - enemy.damage <= 0 ? 0 : this.gameData.health - enemy.damage // how much damage each enemy deals
         this.view.setLives(this.gameData.health);
         if (this.gameData.health === 0) {
             if(this.gameData.state !== "LOST"){
                 this.view.initiateLossScreen();
+                this.loss_handlers.forEach(f => f(this.gameData.round));
             }
             this.gameData.state = "LOST";
         }

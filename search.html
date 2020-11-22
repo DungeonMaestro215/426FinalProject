@@ -3,6 +3,7 @@
     <title>UNC Tower Defense - Search Users</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
     <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dropdown.css">
 
     <style>
@@ -94,13 +95,16 @@
             console.log(x)
             username=x[0].data.username;
             const html = `
+ <div class="box column content is-three-fifths" style="margin-top: 20px">
              <h2 id="username">${x[0].data.username}</h2>
-             <div>
-                Scores
-                <div id="scores">
-                    ${x[1].data.length > 0 ? x[1].data.map(x=> "<p>"+ x.score + "</p>").reduce((x,i) => x+i) : "<p>None</p>"}
+                    <div>
+                        <h4>Scores</h4>
+                        <ul id="scores">
+                    ${x[1].data.length > 0 ? x[1].data.map(x=> "<li>"+ x.score + "</li>").reduce((x,i) => x+i) : "<p>None</p>"}
+                         </ul>
+                    </div>
                 </div>
-             </div>
+
             `;
             document.getElementById("searchInput").value = username;
             document.getElementById("profile").innerHTML = "";

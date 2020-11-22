@@ -3,6 +3,8 @@
     <title>UNC Tower Defense - Profile</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
     <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="style.css">
+
     <link rel="stylesheet" href="dropdown.css">
 
 </head>
@@ -37,13 +39,13 @@
     </div>
 </nav>
 <div class="container content">
-            <h1 class="has-text-centered">Your Profile</h1>
             <div class="columns is-centered">
-                <div class="column content is-three-fifths">
+                <div class="box column content is-three-fifths" style="margin-top: 20px">
+                    <h1 class="has-text-centered">Your Profile</h1>
                     <h2 id="username"></h2>
                     <div>
-                        Scores
-                        <div id="scores"></div>
+                        <h4>Scores</h4>
+                        <ul id="scores"></ul>
                     </div>
                 </div>
             </div>
@@ -84,7 +86,7 @@
         console.log(profile);
         document.getElementById("username").innerText = profile.data.username;
         console.log(scores);
-        scores.data.forEach(x => document.getElementById("scores").insertAdjacentHTML("beforeend", `<p>${x.score}</p>`))
+        scores.data.forEach(x => document.getElementById("scores").insertAdjacentHTML("beforeend", `<li>${x.timestamp.split("T")[0] + " " + "<strong>" + x.score + "</strong>"}</li>`))
     })
 </script>
 </html>

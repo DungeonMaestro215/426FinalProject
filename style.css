@@ -78,6 +78,10 @@ html {
     margin-left: 5px
 }
 
+.is-primary {
+    background-color: darkorange !important;
+}
+
 .row {
     float: left;
     display: grid;
