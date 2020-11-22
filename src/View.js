@@ -404,7 +404,7 @@ export default class View {
         this.getQuotes().then((quotes) => {
             const rand = Math.round(Math.random() * quotes.data.length);
             const quote = quotes.data[rand];
-            quoteDiv.innerHTML = `<p>${quote.text}</p><p>${quote.author}`;
+            quoteDiv.innerHTML = `<p>${quote.text}</p><p class="has-text-right">-${quote.author}</p>`;
         });
     }
 }
