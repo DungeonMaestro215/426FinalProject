@@ -23,7 +23,7 @@ export default class Controller {
     }
 
     async startRound() {
-        if (this.gameData.state === "ACTIVE") {
+        if (this.gameData.state === "ACTIVE" || this.gameData.state === "LOST") {
             return;
         }
         //reset game variables
@@ -34,6 +34,10 @@ export default class Controller {
         this.gameData.round++;
         this.gameData.maxEnemies =
             Math.floor((this.gameData.round * this.gameData.round) / 4.4) + 20;
+        if(this.gameData.round >= 10) {
+            this.gameData.maxEnemies *= 1.2 * Math.min(4, this.gameData.round - 9);
+            this.gameData.spawnSpeed = Math.min(12,1.4 * (this.gameData.round -9));
+        }
         this.view.setRound(this.gameData.round);
         this.gameData.state = "ACTIVE";
         //start drawing and game logic loops
@@ -58,7 +62,7 @@ export default class Controller {
             // console.log(this.projectiles.length);
         }
         if (
-            this.gameData.elapsedTime % 30 === 0 &&
+            this.gameData.elapsedTime % Math.ceil(30/this.gameData.spawnSpeed) === 0 &&
             ++this.gameData.enemiesSpawned < this.gameData.maxEnemies
         ) {
             //randomly add either kmp or kris enemy
@@ -113,7 +117,8 @@ export default class Controller {
         // Check every enemy against every projectile for collisions
         // Handle collisions and then draw enemies
         for (const enemy of this.enemies) {
-            for (const projectile of this.projectiles) {
+            for (let i = 0; i < this.projectiles.length; i++) {
+                const projectile = this.projectiles[i];
                 if (projectile == undefined) continue;
                 if (
                     // projectile.x >= enemy.x &&
@@ -127,7 +132,9 @@ export default class Controller {
                 ) {
                     enemy.handleCollision(projectile);
                     enemy.shot_by = projectile.source;
-                    projectile.has_collided = true;
+                    //projectile.has_collided = true;
+                    this.projectiles.splice(i,1);
+                    i--;
                 }
             }
             // Check every enemy against every single-use tower for collisions
@@ -163,7 +170,7 @@ export default class Controller {
         }
 
         // Remove projectiles which need to be removed
-        this.projectiles = this.projectiles.filter(projectile => !projectile.has_collided);
+        //this.projectiles = this.projectiles.filter(projectile => !projectile.has_collided);
 
         if (
             this.enemies.length > 0 ||
@@ -188,12 +195,13 @@ export default class Controller {
             this.enemies.findIndex((x) => x === enemy),
             1
         );
-        this.gameData.health -= enemy.damage // how much damage each enemy deals
-        if (this.gameData.health <= 0) {
+        this.gameData.health = this.gameData.health - enemy.damage <= 0 ? 0 : this.gameData.health - enemy.damage // how much damage each enemy deals
+        this.view.setLives(this.gameData.health);
+        if (this.gameData.health === 0) {
+            if(this.gameData.state !== "LOST"){
+                this.view.initiateLossScreen();
+            }
             this.gameData.state = "LOST";
-            this.view.initiateLossScreen();
-        } else {
-            this.view.setLives(this.gameData.health);
         }
     }
 
@@ -206,6 +214,7 @@ export default class Controller {
         } else {
             this.gameData.gameSpeed = 1;
             ffbutt.style.backgroundColor = 'white';
+            ffbutt.style.color = 'black';
         }
     }
 }

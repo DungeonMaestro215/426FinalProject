@@ -8,5 +8,6 @@ export default class GameData {
         this.maxEnemies = 0;
         this.money = 250;
         this.gameSpeed = 1;
+        this.spawnSpeed = 1;
     }
 }
