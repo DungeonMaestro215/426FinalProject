@@ -36,6 +36,7 @@ export default class Controller {
         this.gameData.maxEnemies =
             Math.floor((this.gameData.round * this.gameData.round) / 4.4) + 20;
         if(this.gameData.round >= 10) {
+            this.gameData.maxBosses = Math.round(this.gameData.round / 10 * Math.random());
             this.gameData.maxEnemies *= 1.2 * Math.min(4, this.gameData.round - 9);
             this.gameData.spawnSpeed = Math.min(12,1.4 * (this.gameData.round -9));
         }
@@ -66,12 +67,11 @@ export default class Controller {
         //spawn enemies
         const startX = this.view.map.enemyPath[0][0];
         const startY = this.view.map.enemyPath[0][1];
-        const max_bosses = Math.floor(this.gameData.round / 10);
         if (
             this.gameData.elapsedTime % Math.ceil(30/this.gameData.spawnSpeed) === 0 &&
-            ++this.gameData.enemiesSpawned < this.gameData.maxEnemies - max_bosses 
+            ++this.gameData.enemiesSpawned < this.gameData.maxEnemies - this.gameData.maxBosses 
         ) {
-            //randomly add either kmp or kris enemy
+            //randomly add professor enemies
             let enemyRandomizer = Math.random();
             let newEnemy;
             if (enemyRandomizer < .2) {
@@ -89,17 +89,14 @@ export default class Controller {
             this.enemies.push(newEnemy);
         }
 
+        // Spawn Bosses
         if (
             this.gameData.elapsedTime % Math.ceil(30/this.gameData.spawnSpeed) === 0 &&
-            this.gameData.round >= 1 && 
-            this.gameData.enemiesSpawned <= this.gameData.maxEnemies &&
-            this.gameData.enemiesSpawned > this.gameData.maxEnemies - max_bosses
+            this.gameData.enemiesSpawned < this.gameData.maxEnemies &&
+            this.gameData.enemiesSpawned >= this.gameData.maxEnemies - this.gameData.maxBosses
         ) {
             this.gameData.enemiesSpawned++;
-            const boss_randomizer = Math.random();
-            if (boss_randomizer > .5) {
-                this.enemies.push(new BossEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e)));
-            }
+            this.enemies.push(new BossEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e)));
         }
 
         this.towers.forEach(tower => {
@@ -225,7 +222,7 @@ export default class Controller {
     toggleFastForward() {
         const ffbutt = document.getElementById("fastForward");
         if (this.gameData.gameSpeed == 1) {
-            this.gameData.gameSpeed = 2;
+            this.gameData.gameSpeed = 32;
             ffbutt.style.backgroundColor = '#041148';
             ffbutt.style.color = '#d2defc'
         } else {
