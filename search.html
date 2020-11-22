@@ -1,0 +1,185 @@
+<html>
+<head>
+    <title>UNC Tower Defense - Search Users</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
+    <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="dropdown.css">
+
+    <style>
+        .autocompletebox {
+            position: absolute;
+            width: 200px;
+            z-index: 99;
+        }
+        .selected {
+            color: cornflowerblue;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a href="./" class="navbar-item">UNC Tower Defense</a>
+        <a
+                role="button"
+                class="navbar-burger burger"
+                aria-label="menu"
+                aria-expanded="false"
+                data-target="navt"
+        >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navt" class="navbar-menu">
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a href="register.html" id="register" class="button is-primary">
+                        <strong>Sign up</strong>
+                    </a>
+                    <a href="login.html" id="login" class="button is-light"> Log in </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container content">
+    <h1 class="has-text-centered">Search for users</h1>
+    <div class="columns is-centered">
+        <div class="column content is-three-fifths">
+            <div>
+                <label>
+                    <input class="input" style="width: 200px" id="searchInput" placeholder="User"/>
+                </label>
+                <div class="autocompletebox" id="results"></div>
+                <button id="searchButton" class="button">View</button>
+            </div>
+            <div id="profile">
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="auth.js"></script>
+<script>
+    let index = -1;
+    const renderProfile = async (token, uid) => {
+        const profile = (axios({
+            method: 'get',
+            url: 'https://unc-td.herokuapp.com/users/' + uid,
+            headers: {"Authorization": "Bearer " + token},
+        }));
+        const scores = (axios({
+            method: 'get',
+            url: 'https://unc-td.herokuapp.com/users/' + uid + '/scores',
+            headers: {"Authorization": "Bearer " + token},
+        }));
+        let username;
+        Promise.all([profile, scores]).then((x) => {
+            console.log(x)
+            username=x[0].data.username;
+            const html = `
+             <h2 id="username">${x[0].data.username}</h2>
+             <div>
+                Scores
+                <div id="scores">
+                    ${x[1].data.length > 0 ? x[1].data.map(x=> "<p>"+ x.score + "</p>").reduce((x,i) => x+i) : "<p>None</p>"}
+                </div>
+             </div>
+            `;
+            document.getElementById("searchInput").value = username;
+            document.getElementById("profile").innerHTML = "";
+            document.getElementById("results").outerHTML = "<div class=\"autocompletebox\" id=\"results\"></div>"
+            document.getElementById("profile").insertAdjacentHTML("beforeend", html);
+        })
+    }
+
+    document.addEventListener("DOMContentLoaded",async () => {
+        await getUser();
+
+        let token, uid;
+        if((token = localStorage.getItem("auth_token")) != null && token !== "null") {
+            await axios({
+                method: 'post',
+                url: 'https://unc-td.herokuapp.com/checkToken',
+                headers: {"Authorization": "Bearer " + token},
+                data: {
+                    token: token,
+                }
+            }).then(x => {
+                console.log(x);
+                uid = x.data;
+            });
+        } else {
+            document.querySelector(".container").innerHTML="<p>Error: you must be logged in to view this page.</p>";
+        }
+
+        const users = (await axios({
+            method: 'get',
+            url: 'https://unc-td.herokuapp.com/users',
+        })).data;
+        let filtered_results;
+        document.getElementById("searchInput").addEventListener("input", function () {
+            document.getElementById("searchInput").classList.remove("is-danger")
+            filtered_results = users.filter(x => x.username.indexOf(this.value) === 0);
+            index = -1;
+            if(this.value.length >= 1 && filtered_results.length > 0) {
+                document.getElementById("results").outerHTML = "<div id='results' class='box autocompletebox'></div>"
+                filtered_results.forEach((x,i) => {
+                    document.getElementById("results").insertAdjacentHTML("beforeend",
+                        "<p id='user_" + i +"'>"+x.username+"</p>");
+                    document.getElementById("user_"+i).addEventListener("click", () => renderProfile(token, filtered_results[i].id))
+                });
+            } else {
+                document.getElementById("results").outerHTML = "<div class=\"autocompletebox\" id=\"results\"></div>"
+            }
+        });
+        document.getElementById("searchButton").addEventListener("click", function () {
+            const value = document.getElementById("searchInput").value;
+            let u;
+            if((u = users.filter(x=>x.username === value)).length === 1) {
+                renderProfile(token, u[0].id)
+            } else {
+                document.getElementById("searchInput").classList.add("is-danger")
+            }
+        })
+        document.addEventListener("click", () => {
+            document.getElementById("results").outerHTML = "<div class=\"autocompletebox\" id=\"results\"></div>"
+        })
+        document.getElementById("searchInput").addEventListener("keydown", function (e) {
+            if(document.getElementById("user_0") == null || filtered_results == null) return;
+            if((e.key === "ArrowUp" || e.key ==="ArrowDown") && index === -1) {
+                document.getElementById("user_0").classList.add("selected")
+                index = 0;
+                return;
+            }
+            switch(e.code){
+                case "ArrowUp":
+                    e.preventDefault();
+                    if(index > 0) index--;
+                    break;
+                case "ArrowDown":
+                    e.preventDefault();
+                    if(index < filtered_results.length - 1) index++;
+                    break;
+                case "Enter":
+                    e.preventDefault();
+                    renderProfile(token, filtered_results[index].id)
+            }
+            if(filtered_results.length > 0 && index >= 0) {
+                for(let i = 0; i < filtered_results.length; i++) {
+                    document.getElementById("user_" + i).classList.remove("selected")
+                }
+                document.getElementById("user_" + index).classList.add("selected")
+            }
+            console.log(index);
+
+        })
+    })
+
+</script>
+</html>

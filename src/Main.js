@@ -21,37 +21,7 @@ window.onload = async () => {
     controller.loss_handlers.push((score) => writeScore(user,score));
 }
 
-async function getUser() {
-    let token;
-    if((token = localStorage.getItem("auth_token")) != null) {
-        const x = await axios({
-            method: 'post',
-            url: backend_url + '/checkToken',
-            headers: {Authorization: 'Bearer ' + token},
-            data: {
-                token: token,
-            }
-        })
-        const profile = await axios({
-            method: 'get',
-            url: backend_url + '/users/' + x.data,
-            headers: {Authorization: 'Bearer ' + token},
-        })
-        document.getElementById("register").remove();
-        document.getElementById("login").outerHTML = "<button id='log_out' class='button is-primary'>Log Out</button>";
-        document.getElementById("log_out").addEventListener("click",logOut);
-        document.querySelector(".buttons").insertAdjacentHTML("beforebegin",
-            "<span id='loggedin' class='navbar-item is-vcentered'>" + profile.data.username + "</span>"
-        );
 
-        return x.data;
-    }
-}
-
-async function logOut() {
-    localStorage.setItem("auth_token", null);
-    window.location = "./"
-}
 
 async function writeScore(user_id, score){
     if(user_id == null) return;

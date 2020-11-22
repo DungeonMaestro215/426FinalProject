@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="dropdown.css">
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
         <title>Tower Defense</title>
     </head>
@@ -41,6 +43,7 @@
                             <a href="register.html" id="register" class="button is-primary">
                                 <strong>Sign up</strong>
                             </a>
+                            <button id="leaderboard_toggle" class="button">Leaderboard</button>
                             <a href="login.html" id="login" class="button is-light"> Log in </a>
                         </div>
                     </div>
@@ -48,7 +51,7 @@
             </div>
         </nav>
         <div class="container is-justify-content-center">
-            <button id="leaderboard_toggle" class="button">Leaderboard</button>
+
             <div class="game-container">
                 <div class="flex-container">
                     <div id="stage">
@@ -72,6 +75,7 @@
                 <div class="towerSidebar" id="towerInfo"></div>
             </div>
         </div>
+        <script src="auth.js"></script>
         <script type="module" src="src/Main.js"></script>
     </body>
 </html>

@@ -3,6 +3,8 @@
     <title>UNC Tower Defense - Profile</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
     <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="dropdown.css">
+
 </head>
 <body>
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -47,12 +49,13 @@
             </div>
 </div>
 </body>
+<script src="auth.js"></script>
 <script>
-    const backend_url = 'https://unc-td.herokuapp.com';
     document.addEventListener("DOMContentLoaded", async () => {
         console.log("sneed")
+        getUser();
         let token, uid;
-        if((token = localStorage.getItem("auth_token")) != null) {
+        if((token = localStorage.getItem("auth_token")) != null && token !== "null") {
             await axios({
                 method: 'post',
                 url: 'https://unc-td.herokuapp.com/checkToken',
@@ -64,6 +67,9 @@
                 console.log(x);
                 uid = x.data;
             });
+        } else {
+            document.querySelector(".container").innerHTML="<p>Error: you must be logged in to view this page.</p>";
+            return;
         }
         const scores = await axios({
             method: 'get',
