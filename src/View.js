@@ -134,6 +134,13 @@ export default class View {
                 this.listener = (e) => this.renderTowerFromMouseEvent(e, tower)
             );
         }
+        const info = document.querySelector('#towerInfo');
+        if (this.selectedTower) {
+            info.innerHTML = "";
+            info.append(this.selectedTower.renderSalesPitch());
+        } else {
+            info.innerHTML = "";
+        }
     }
 
     /*
