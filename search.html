@@ -66,6 +66,17 @@
 </body>
 <script src="auth.js"></script>
 <script>
+    function debounce(fn, time) {
+        let timer;
+
+        return function() {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                fn.apply(this,arguments,)
+            }, time)
+        }
+    }
+
     let index = -1;
     const renderProfile = async (token, uid) => {
         const profile = (axios({
@@ -123,7 +134,8 @@
             url: 'https://unc-td.herokuapp.com/users',
         })).data;
         let filtered_results;
-        document.getElementById("searchInput").addEventListener("input", function () {
+
+        const inputFunc = function () {
             document.getElementById("searchInput").classList.remove("is-danger")
             filtered_results = users.filter(x => x.username.indexOf(this.value) === 0);
             index = -1;
@@ -137,7 +149,10 @@
             } else {
                 document.getElementById("results").outerHTML = "<div class=\"autocompletebox\" id=\"results\"></div>"
             }
-        });
+        }
+
+
+        document.getElementById("searchInput").addEventListener("input", debounce(inputFunc, 350));
         document.getElementById("searchButton").addEventListener("click", function () {
             const value = document.getElementById("searchInput").value;
             let u;
