@@ -64,7 +64,8 @@ export default class View {
             }
         });
 
-        this.getQuotes().then((quotes) => console.log(quotes));
+        this.getQuotes().then((quotes) => console.log(quotes.data[500].text));
+        this.updateQuote();
     }
 
     setRound(round) {
@@ -397,6 +398,14 @@ export default class View {
             })
         }
         return this.quotes;
+    }
+    updateQuote() {
+        const quoteDiv = document.getElementById("quotes");
+        this.getQuotes().then((quotes) => {
+            const rand = Math.round(Math.random() * quotes.data.length);
+            const quote = quotes.data[rand];
+            quoteDiv.innerHTML = `<p>${quote.text}</p><p>${quote.author}`;
+        });
     }
 }
 
