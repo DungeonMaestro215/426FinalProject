@@ -438,7 +438,11 @@ export default class View {
             const rand = Math.round(Math.random() * quotes.data.length);
             const quote = quotes.data[rand];
             quote_div.innerHTML = `<p>${quote.text}</p>`;
-            author_div.innerHTML = `<p>-${quote.author}</p>`;
+            if (quote.author) {
+                author_div.innerHTML = `<p>-${quote.author}</p>`;
+            } else {
+                author_div.innerHTML = `<p>-Anonymous</p>`;
+            }
         });
     }
 }
