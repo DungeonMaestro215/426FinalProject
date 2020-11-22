@@ -93,3 +93,9 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
     min-height: 70px;
     min-width: 333px;
 }
+
+#quotes {
+    margin: auto;
+    margin-top: 50px;
+    width: 50%;
+}

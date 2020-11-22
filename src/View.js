@@ -63,6 +63,9 @@ export default class View {
                 this.updateTowerInfo();
             }
         });
+
+        this.getQuotes().then((quotes) => console.log(quotes.data[500].text));
+        this.updateQuote();
     }
 
     setRound(round) {
@@ -312,6 +315,17 @@ export default class View {
                     if(this.controller.gameData.money >= special_upgrade.cost) {
                         this.controller.gameData.money -= special_upgrade.cost;
                         this.clickedTower.applyUpgrade(special_upgrade)
+                        this.ctx.clearRect(this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                        let img = new Image();
+                        img.addEventListener(
+                            "load",
+                            () => {
+                                this.ctx.drawImage(img, this.clickedTower.x,this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                            },
+                            false
+                        );
+                        img.src = this.clickedTower.sprite;
+
                     }
                 });
                 info.append(special_upgrade_butt);
@@ -384,6 +398,25 @@ export default class View {
             die_raf = window.requestAnimationFrame(die);
         };
         window.requestAnimationFrame(die);
+    }
+
+    // Quotes
+    getQuotes() {
+        if (!this.quotes) {
+            this.quotes = axios({
+                method: 'get',
+                url: 'https://type.fit/api/quotes'
+            })
+        }
+        return this.quotes;
+    }
+    updateQuote() {
+        const quoteDiv = document.getElementById("quotes");
+        this.getQuotes().then((quotes) => {
+            const rand = Math.round(Math.random() * quotes.data.length);
+            const quote = quotes.data[rand];
+            quoteDiv.innerHTML = `<p>${quote.text}</p><p class="has-text-right">-${quote.author}</p>`;
+        });
     }
 }
 
