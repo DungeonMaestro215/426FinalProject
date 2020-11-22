@@ -19,6 +19,7 @@ export default class Tower {
     proj_size = 10
     special_upgrades = [];
     description = '';
+    moneySpent = 0;
     get_bullet_sprite = () => "../images/bubble.webp";
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
@@ -90,6 +91,8 @@ export default class Tower {
     }
 
     upgrade() {
+        this.sell += this.upgrade_cost / 2;
+        this.sell = Math.ceil(this.sell);
         this.upgrade_cost += this.upgrade_cost;
         this.level++;
         if (this.level === 2) {

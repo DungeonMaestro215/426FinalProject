@@ -8,6 +8,7 @@ export default class BitcoinTower extends Tower {
         this.damage = 5;
         this.fire_rate = .1;
         this.description = 'Farms some coin for ya, but watch out... Those professors have some grubby mitts.';
+        this.cost = 250;
     }
 
     // Create a bitcoin
@@ -23,6 +24,8 @@ export default class BitcoinTower extends Tower {
     }
 
     upgrade() {
+        this.sell += this.upgrade_cost / 2;
+        this.sell = Math.ceil(this.sell);
         this.upgrade_cost *= 2;
         this.level++;
         this.damage += 5;
