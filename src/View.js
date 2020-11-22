@@ -41,9 +41,9 @@ export default class View {
             document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
         }
 
-        this.towerplacement_canvas.addEventListener('click', (e) => {
-            console.log(getCursorPosition(this.towerplacement_canvas, e));
-        })
+        // this.towerplacement_canvas.addEventListener('click', (e) => {
+        //     console.log(getCursorPosition(this.towerplacement_canvas, e));
+        // })
 
         // Allow user to click on placed towers
         this.towerplacement_canvas.addEventListener('click', (e) => {
@@ -64,7 +64,6 @@ export default class View {
             }
         });
 
-        // document.getElementById("quotes").addEventListener('click', () => this.updateQuote());
         this.updateQuote();
         setInterval(() => this.updateQuote(), 15000);
     }

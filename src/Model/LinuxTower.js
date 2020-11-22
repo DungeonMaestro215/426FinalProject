@@ -46,6 +46,8 @@ export default class LinuxTower extends Tower {
     }
 
     upgrade() {
+        this.sell += this.upgrade_cost / 2;
+        this.sell = Math.ceil(this.sell);
         this.level++;
         this.upgrade_cost *= 4;
         this.damage += 1;
