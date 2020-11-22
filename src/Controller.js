@@ -99,8 +99,14 @@ export default class Controller {
 
         // move every projectile
         this.projectiles.forEach(projectile => projectile.move());
-        // Get rid of projectiles which go off screen
+        // Get rid of projectiles which go off screen or go out of range
         this.projectiles = this.projectiles.filter(projectile => {
+            // This is when bitcoins become game monies
+            if (projectile.source.targetType == "miner" && projectile.distance < projectile.range) {
+                this.gameData.money += projectile.damage;
+                this.view.setMoney(this.gameData.money);
+                this.view.updateTowerInfo();
+            }
             return projectile.x > 0 &&
                 projectile.x < this.view.canvas.width &&
                 projectile.y > 0 &&
@@ -208,6 +214,7 @@ export default class Controller {
         } else {
             this.gameData.gameSpeed = 1;
             ffbutt.style.backgroundColor = 'white';
+            ffbutt.style.color = 'black';
         }
     }
 }
