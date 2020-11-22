@@ -49,6 +49,7 @@ export default class LinuxTower extends Tower {
         this.level++;
         this.upgrade_cost *= 4;
         this.damage += 1;
+        this.range += 5;
         this.fire_rate += .5;
         // Fix weird issues with decimals
         // this.damage = Math.round(this.damage * 10) / 10;
