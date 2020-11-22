@@ -64,8 +64,9 @@ export default class View {
             }
         });
 
-        this.getQuotes().then((quotes) => console.log(quotes.data[500].text));
+        // document.getElementById("quotes").addEventListener('click', () => this.updateQuote());
         this.updateQuote();
+        setInterval(() => this.updateQuote(), 15000);
     }
 
     setRound(round) {
@@ -418,11 +419,15 @@ export default class View {
         return this.quotes;
     }
     updateQuote() {
-        const quoteDiv = document.getElementById("quotes");
+        const quote_wrapper = document.getElementById("quote-wrapper");
+        const quote_div = document.getElementById("quote");
+        const author_div = document.getElementById("author");
+
         this.getQuotes().then((quotes) => {
             const rand = Math.round(Math.random() * quotes.data.length);
             const quote = quotes.data[rand];
-            quoteDiv.innerHTML = `<p>${quote.text}</p><p class="has-text-right">-${quote.author}</p>`;
+            quote_div.innerHTML = `<p>${quote.text}</p>`;
+            author_div.innerHTML = `<p>-${quote.author}</p>`;
         });
     }
 }

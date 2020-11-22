@@ -94,8 +94,49 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
     min-width: 333px;
 }
 
-#quotes {
-    margin: auto;
+#quote-wrapper {
     margin-top: 50px;
-    width: 50%;
+    margin-bottom: 50px;
+    min-width: 100%;
+    animation: fade 15s infinite;
 }
+
+#quote {
+    position: relative;
+    max-width: 40%;
+    animation: moveRight 15s infinite;  
+}
+
+#author {
+    position: relative;
+    animation: moveLeft 15s infinite; 
+}
+
+@keyframes moveRight {
+    0% {left: 10%}
+    50% {left: 20%}
+    100% {left: 40%}
+}
+
+@keyframes fade {
+    0% {opacity: 0%}
+    50% {opacity: 100%}
+    90% {opacity: 0%}
+    100% {opacity: 0%}
+}
+
+@keyframes moveLeft {
+    0% {right: 30%}
+    50% {right: 40%}
+    100% {right: 60%}
+}
+
+/* .fade-in {
+    opacity: 100%;
+    transition: 3s linear;
+}
+
+.fade-out {
+    opacity: 0%;
+    transition: 2s linear;
+} */

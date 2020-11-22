@@ -57,10 +57,12 @@ export default class Controller {
     }
 
     async updateGame() {
-        //spawn enemies
-        if(this.gameData.elapsedTime % 20) {
+        if(this.gameData.elapsedTime % 200 == 0) {
             // console.log(this.projectiles.length);
+            // this.view.updateQuote();
         }
+
+        //spawn enemies
         if (
             this.gameData.elapsedTime % Math.ceil(30/this.gameData.spawnSpeed) === 0 &&
             ++this.gameData.enemiesSpawned < this.gameData.maxEnemies
