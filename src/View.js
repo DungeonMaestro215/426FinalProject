@@ -73,7 +73,7 @@ export default class View {
         document.getElementById("lives").innerText = `Lives: ${lives}`;
     }
     setMoney(money) {
-        document.getElementById("money").innerText = `Money: ${money}`;
+        document.getElementById("money").innerText = `Bitcoin: ${money}`;
     }
 
     toggleDraw() {
