@@ -30,6 +30,12 @@ export default class Enemy {
         return this.health > 0 ? "alive" : "dead";
     }
 
+    /* Nathaniel Badgett, of the physics department, 
+     * found a game-breaking bug with the speed of the
+     * professors when they travel at a 45 degree angle.
+     * It is, in fact, scaled by 1/sqrt(2), rather than just
+     * sqrt(2), as my small CompSci brain thought.
+     */
     getVx(path){
         switch (path[this.currentNode][2]) {
             case 'u':
@@ -41,10 +47,10 @@ export default class Enemy {
                 return this.velocity;
             case 'ul':
             case 'dl':
-                return -Math.sqrt(2) * this.velocity;
+                return -1/Math.sqrt(2) * this.velocity;
             case 'ur':
             case 'dr':
-                return Math.sqrt(2) * this.velocity;
+                return 1/Math.sqrt(2) * this.velocity;
         }
     }
 
@@ -59,10 +65,10 @@ export default class Enemy {
                 return this.velocity;
             case 'ul':
             case 'ur':
-                return -Math.sqrt(2) * this.velocity;
+                return -1/Math.sqrt(2) * this.velocity;
             case 'dl':
             case 'dr':
-                return Math.sqrt(2) * this.velocity;
+                return 1/Math.sqrt(2) * this.velocity;
         }
     }
 
