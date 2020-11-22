@@ -17,6 +17,6 @@ export default class MacTower extends Tower {
                     this.special_upgrades.find(x => x.name==="ARM Instruction Set").available = false;
                 }
             }
-        })
+        });
     }
 }

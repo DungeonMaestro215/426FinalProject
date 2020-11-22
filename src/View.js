@@ -63,6 +63,8 @@ export default class View {
                 this.updateTowerInfo();
             }
         });
+
+        this.getQuotes().then((quotes) => console.log(quotes));
     }
 
     setRound(round) {
@@ -384,6 +386,17 @@ export default class View {
             die_raf = window.requestAnimationFrame(die);
         };
         window.requestAnimationFrame(die);
+    }
+
+    // Quotes
+    getQuotes() {
+        if (!this.quotes) {
+            this.quotes = axios({
+                method: 'get',
+                url: 'https://type.fit/api/quotes'
+            })
+        }
+        return this.quotes;
     }
 }
 
