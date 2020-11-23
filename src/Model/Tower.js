@@ -32,9 +32,7 @@ export default class Tower {
     }
 
     applyUpgrade(upgrade) {
-        console.log(this.fire_rate);
         upgrade.effect();
-        console.log(this.fire_rate);
     }
 
     //logic tower uses to choose which enemy to shoot at
