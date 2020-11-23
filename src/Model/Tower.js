@@ -70,12 +70,12 @@ export default class Tower {
 
         //predict where the target is gonna be when the projectile gets there
         let adx =
-            (target.x - target.size/2)+
+            (target.x - target.size)+
             (target.getVx(enemyPath)) *
             (min_d / this.bullet_v) -
             this.x;
         let ady =
-            (target.y - target.size/2)+
+            (target.y - target.size)+
             target.getVy(enemyPath) *
             (min_d / this.bullet_v) -
             this.y;

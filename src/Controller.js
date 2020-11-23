@@ -50,6 +50,7 @@ export default class Controller {
         this.gameData.money +=
             140 + Math.floor(Math.pow(1.06, this.gameData.round) * 33);
         this.view.setMoney(this.gameData.money);
+        this.view.updateTowerInfo();
         if (this.gameData.state === "ACTIVE") {
             this.gameData.state = "PAUSED";
             this.view.toggleDraw();
@@ -59,7 +60,9 @@ export default class Controller {
     }
 
     async updateGame() {
-        if(this.gameData.elapsedTime % 200 == 0) {
+        if(this.gameData.elapsedTime % 30 == 0) {
+            this.view.updateTowerInfo();
+            // console.log("now");
             // console.log(this.projectiles.length);
             // this.view.updateQuote();
         }
@@ -119,7 +122,7 @@ export default class Controller {
             if (projectile.source.targetType == "miner" && projectile.distance < projectile.range) {
                 this.gameData.money += projectile.damage;
                 this.view.setMoney(this.gameData.money);
-                this.view.updateTowerInfo();
+                // this.view.updateTowerInfo();
             }
             return projectile.x > 0 &&
                 projectile.x < this.view.canvas.width &&
@@ -139,10 +142,10 @@ export default class Controller {
                     // projectile.x <= enemy.x + enemy.size &&
                     // projectile.y >= enemy.y &&
                     // projectile.y <= enemy.y + enemy.size
-                    projectile.x <= enemy.x + enemy.size &&
-                    projectile.x + projectile.size >= enemy.x &&
-                    projectile.y <= enemy.y + enemy.size &&
-                    projectile.y + projectile.size >= enemy.y
+                    projectile.x <= enemy.x + enemy.size/2 &&
+                    projectile.x + projectile.size >= enemy.x - enemy.size/2 &&
+                    projectile.y <= enemy.y + enemy.size/2 &&
+                    projectile.y + projectile.size >= enemy.y - enemy.size/2
                 ) {
                     enemy.handleCollision(projectile);
                     enemy.shot_by = projectile.source;
@@ -155,10 +158,10 @@ export default class Controller {
             for (const tower of this.towers) {
                 if (tower == undefined || tower.targetType != 'single-use') continue;
                 if (
-                    enemy.x <= tower.x + tower.size &&
-                    enemy.x + enemy.size >= tower.x &&
-                    enemy.y <= tower.y + tower.size &&
-                    enemy.y + enemy.size >= tower.y
+                    enemy.x - enemy.size/2 <= tower.x + tower.size &&
+                    enemy.x + enemy.size/2 >= tower.x &&
+                    enemy.y - enemy.size/2 <= tower.y + tower.size &&
+                    enemy.y + enemy.size/2 >= tower.y
                 ) {
                     enemy.handleCollision(tower);
                     enemy.shot_by = tower;
@@ -166,9 +169,9 @@ export default class Controller {
                     if (tower.remaining_damage <= 0) {
                         this.view.removeTower(tower);
                     }
-                    if (tower == this.view.clickedTower) {
-                        this.view.updateTowerInfo();
-                    }
+                    // if (tower == this.view.clickedTower) {
+                    //     this.view.updateTowerInfo();
+                    // }
                 }
             }
 
@@ -177,7 +180,7 @@ export default class Controller {
                 this.gameData.money += enemy.getReward();
                 this.view.setMoney(this.gameData.money);
                 enemy.shot_by.increaseKills();
-                this.view.updateTowerInfo();
+                // this.view.updateTowerInfo();
             } else {
                 enemy.move(this.view.map.enemyPath);
             }
@@ -199,7 +202,6 @@ export default class Controller {
                 if (tower.targetType == 'single-use') { 
                     this.view.removeTower(tower);
                 }});
-            this.view.updateTowerInfo();
         }
     }
 
