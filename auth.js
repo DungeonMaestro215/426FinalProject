@@ -1,5 +1,12 @@
 const backend_url = 'https://unc-td.herokuapp.com';
 
+document.querySelector(".burger").addEventListener(
+    "click", () => {
+        document.querySelector(".navbar-menu").classList.toggle("is-active");
+    }
+)
+
+
 async function getUser() {
     let token;
     if ((token = localStorage.getItem("auth_token")) != null && token !== "null") {
