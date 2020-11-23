@@ -43,8 +43,8 @@ export default class Tower {
         let target;
 
         for (let enemy of enemies) {
-            let dx = enemy.x - this.x;
-            let dy = enemy.y - this.y;
+            let dx = enemy.x - this.x - this.size/2;
+            let dy = enemy.y - this.y - this.size/2;
             let d = Math.sqrt(dx ** 2 + dy ** 2);
             if (d < min_d && d < this.range) {
                 min_d = d;
