@@ -17,6 +17,9 @@ window.onload = async () => {
     document
         .getElementById("roundStart")
         .addEventListener("click", controller.startRound.bind(controller));
+    document
+        .getElementById("mute")
+        .addEventListener("click", controller.muteSound.bind(controller));
 
     generateLeaderboard();
     const user = await getUser();

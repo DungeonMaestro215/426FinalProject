@@ -114,7 +114,7 @@ export default class Tower {
 
     renderTowerInfo() {
         const info = document.createElement('div');
-        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Kills: ${this.kills}</p><p>Damage: ${this.damage}</p>`;
+        info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Eliminations: ${this.kills}</p><p>Damage: ${this.damage}</p>`;
         return info;
     }
 

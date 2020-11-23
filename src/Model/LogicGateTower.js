@@ -7,6 +7,6 @@ export default class LogicGateTower extends SingleUseTower {
         this.damage = 5;
         this.remaining_damage = 100;
         this.sell = 0;
-        this.description = 'Single use tower to invert those professors to dead.';
+        this.description = 'Single use tower to invert those professors to dead. Place on the track.';
     }
 }

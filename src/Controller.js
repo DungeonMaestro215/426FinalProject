@@ -15,6 +15,7 @@ export default class Controller {
     towers;
     projectiles;
     loss_handlers;
+    mute = false;
 
     constructor(map) {
         // this.view = view;
@@ -65,11 +66,13 @@ export default class Controller {
         //start drawing and game logic loops
         this.view.toggleDraw();
         await this.updateGame();
-        if (this.gameData.round !== 0 && this.gameData.round % 5 === 0 && this.gameData.health !== 0) {
+        if (
+            !this.mute &&
+            this.gameData.round !== 0 && 
+            this.gameData.round % 5 === 0 &&
+            this.gameData.health !== 0
+        ) {
             let sound = new Audio('../images/doingood.mp3');
-            sound.play();
-        } else if (this.gameData.health === 0) {
-            let sound = new Audio('../images/Fatality.mp3');
             sound.play();
         }
         this.projectiles = [];
@@ -247,6 +250,10 @@ export default class Controller {
             if(this.gameData.state !== "LOST"){
                 this.view.initiateLossScreen();
                 this.loss_handlers.forEach(f => f(this.gameData.round));
+                if (!this.mute) {
+                    let sound = new Audio('../images/Fatality.mp3');
+                    sound.play();
+                }
             }
             this.gameData.state = "LOST";
         }
@@ -255,17 +262,27 @@ export default class Controller {
     toggleFastForward() {
         // var audio = document.getElementsByTagName('audio')[0];
         // audio.play();
-        let sound = new Audio('../images/zoom.mp3');
-        sound.play();
+        if (!this.mute) {
+            let sound = new Audio('../images/zoom.mp3');
+            sound.play();
+        }
         const ffbutt = document.getElementById("fastForward");
         if (this.gameData.gameSpeed == 1) {
-            this.gameData.gameSpeed = 5;
+            this.gameData.gameSpeed = 3;
             ffbutt.style.backgroundColor = '#041148';
             ffbutt.style.color = '#d2defc'
         } else {
             this.gameData.gameSpeed = 1;
             ffbutt.style.backgroundColor = 'white';
             ffbutt.style.color = 'black';
+        }
+    }
+
+    muteSound() {
+        if (this.mute = !this.mute) {
+            document.getElementById("mute").innerHTML = '<img width="50px" height="50px" src="./images/soundoff.png">';
+        } else {
+            document.getElementById("mute").innerHTML = '<img width="50px" height="50px" src="./images/soundon.png">';
         }
     }
 
