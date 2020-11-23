@@ -36,4 +36,10 @@ export default class BitcoinTower extends Tower {
         info.innerHTML = `<p>Tower: ${this.name}</p><p>Level: ${this.level}</p><p>Bitcoin Value: ${this.damage}</p>`;
         return info;
     }
+
+    renderSalesPitch() {
+        const info = document.createElement('div');
+        info.innerHTML = `<p>Tower: ${this.name}</p><p>Cost: ${this.cost}</p><p>Rate: ${this.fire_rate}</p><p>Bitcoin Value: ${this.damage}</p>`;
+        return info;
+    }
 }

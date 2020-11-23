@@ -26,14 +26,6 @@ export default class Projectile {
     }
 
     draw = (ctx) =>  {
-        // ctx.fillStyle = 'rgba(0, 0, 0, 1)';     // Color projectiles black
-        // ctx.fillRect(this.x, this.y, 5, 5);
-        // ctx.save();
-        // ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
-        // ctx.rotate(this.angle);
-        // ctx.drawImage(this.sprite, 0, 0, this.size, this.size);
-        // ctx.restore();
-
         ctx.drawImage(this.sprite, this.x, this.y, this.size, this.size);
     }
 
