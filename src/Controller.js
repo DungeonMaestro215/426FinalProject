@@ -5,6 +5,8 @@ import StottsEnemy from "./Model/StottsEnemy.js";
 import SnoeyinkEnemy from "./Model/SnoeyinkEnemy.js";
 import MunsellEnemy from "./Model/MunsellEnemy.js";
 import BossEnemy from "./Model/BossEnemy.js";
+import View from "./View.js";
+import FirstMap from "./Model/FirstMap.js";
 
 export default class Controller {
     view;
@@ -13,14 +15,30 @@ export default class Controller {
     towers;
     projectiles;
 
-    constructor(view) {
-        this.view = view;
+    constructor(map) {
+        // this.view = view;
+        // this.gameData = new GameData();
+        // this.enemies = [];
+        // this.towers = [];
+        // this.projectiles = [];
+        // this.view.setLives(this.gameData.health);
+        // this.view.setRound(this.gameData.round);
+        this.resetGame(new FirstMap());
+        
+        this.updateQuote();
+        setInterval(() => this.updateQuote(), 20000);
+    }
+
+    resetGame(map) {
+        this.view = new View(this, map);
         this.gameData = new GameData();
         this.enemies = [];
         this.towers = [];
         this.projectiles = [];
         this.view.setLives(this.gameData.health);
         this.view.setRound(this.gameData.round);
+        this.view.draw();
+        this.view.setMoney(this.gameData.money);
     }
 
     async startRound() {
@@ -46,9 +64,12 @@ export default class Controller {
         this.view.toggleDraw();
         await this.updateGame();
         this.projectiles = [];
-        //
-        this.gameData.money +=
-            140 + Math.floor(Math.pow(1.06, this.gameData.round) * 33);
+
+        // If statement fixes money bug with resetting game in the middle of a round
+        if (this.gameData.round) {
+            this.gameData.money +=
+                140 + Math.floor(Math.pow(1.06, this.gameData.round) * 33);
+        }
         this.view.setMoney(this.gameData.money);
         this.view.updateTowerInfo();
         if (this.gameData.state === "ACTIVE") {
@@ -205,7 +226,6 @@ export default class Controller {
         }
     }
 
-
     enemyReachedEndHandler(enemy) {
         this.enemies.splice(
             this.enemies.findIndex((x) => x === enemy),
@@ -232,5 +252,32 @@ export default class Controller {
             ffbutt.style.backgroundColor = 'white';
             ffbutt.style.color = 'black';
         }
+    }
+
+    // Quotes
+    getQuotes() {
+        if (!this.quotes) {
+            this.quotes = axios({
+                method: 'get',
+                url: 'https://type.fit/api/quotes'
+            })
+        }
+        return this.quotes;
+    }
+    updateQuote() {
+        const quote_wrapper = document.getElementById("quote-wrapper");
+        const quote_div = document.getElementById("quote");
+        const author_div = document.getElementById("author");
+
+        this.getQuotes().then((quotes) => {
+            const rand = Math.round(Math.random() * quotes.data.length);
+            const quote = quotes.data[rand];
+            quote_div.innerHTML = `<p>${quote.text}</p>`;
+            if (quote.author) {
+                author_div.innerHTML = `<p>-${quote.author}</p>`;
+            } else {
+                author_div.innerHTML = `<p>-Anonymous</p>`;
+            }
+        });
     }
 }
