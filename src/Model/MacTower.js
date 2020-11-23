@@ -5,6 +5,8 @@ export default class MacTower extends Tower {
         super("../images/MacLogo.png", 'Mac', x, y, "first", 10);
         this.range = 200;
         this.fire_rate = 2;
+        this.cost = 150;
+        this.damage = 1;
         this.description = 'Clearly the worst OS.';
         this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
         this.proj_size=25;
@@ -21,5 +23,13 @@ export default class MacTower extends Tower {
                 }
             }
         });
+    }
+
+    upgrade() {
+        this.sell += this.upgrade_cost / 2;
+        this.sell = Math.ceil(this.sell);
+        this.upgrade_cost += this.upgrade_cost;
+        this.level++;
+        this.damage += 1;
     }
 }

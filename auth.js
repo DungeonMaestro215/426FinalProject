@@ -44,6 +44,8 @@ async function getUser() {
             console.log("sneed")
             activateUserDropdown();
         })
+        // document.getElementById("loggedin").classList.add("button");
+        // document.getElementById("loggedin").classList.add("is-primary");
 
         function activateUserDropdown() {
             document.getElementById("myDropdown").classList.toggle("show");
@@ -66,6 +68,10 @@ async function getUser() {
 }
 
 async function logOut() {
+    // let sound = new Audio('Recording.mp3');
+    // sound.play();
+    // var audio = document.getElementsByTagName('audio')[0];
+    // audio.play();
     localStorage.setItem("auth_token", null);
     window.location = "./"
 }

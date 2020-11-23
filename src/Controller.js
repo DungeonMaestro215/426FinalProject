@@ -47,6 +47,13 @@ export default class Controller {
         //start drawing and game logic loops
         this.view.toggleDraw();
         await this.updateGame();
+        if (this.gameData.round % 5 === 0 && this.gameData.health !== 0) {
+            let sound = new Audio('../images/doingood.mp3');
+            sound.play();
+        } else if (this.gameData.health === 0) {
+            let sound = new Audio('../images/Fatality.mp3');
+            sound.play();
+        }
         this.projectiles = [];
         //
         this.gameData.money +=
@@ -224,9 +231,13 @@ export default class Controller {
     }
 
     toggleFastForward() {
+        // var audio = document.getElementsByTagName('audio')[0];
+        // audio.play();
+        let sound = new Audio('../images/zoom.mp3');
+        sound.play();
         const ffbutt = document.getElementById("fastForward");
         if (this.gameData.gameSpeed == 1) {
-            this.gameData.gameSpeed = 2;
+            this.gameData.gameSpeed = 5;
             ffbutt.style.backgroundColor = '#041148';
             ffbutt.style.color = '#d2defc'
         } else {

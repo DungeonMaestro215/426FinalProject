@@ -95,12 +95,7 @@ export default class Tower {
         this.sell = Math.ceil(this.sell);
         this.upgrade_cost += this.upgrade_cost;
         this.level++;
-        if (this.level === 2) {
-            this.damage += .5;
-        } else {
-            this.damage += 1;
-        }
-        this.range += 10;
+        this.damage += 1;
     }
 
     clickHandler(x, y) {
