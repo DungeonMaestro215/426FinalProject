@@ -20,8 +20,6 @@ export default class View {
     raf;
     clickedTower;
     map;
-    // map = new FirstMap();
-    // map = new SecondMap();
 
     constructor(controller, map) {
         //Create map object and load image to the canvas
@@ -57,10 +55,6 @@ export default class View {
             );
             document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
         }
-
-        // this.towerplacement_canvas.addEventListener('click', (e) => {
-        //     console.log(getCursorPosition(this.towerplacement_canvas, e));
-        // });
 
         // Allow user to click on placed towers
         this.towerplacement_canvas.addEventListener('click', (e) => {
@@ -392,7 +386,6 @@ export default class View {
     }
 
     upgradeTower() {
-        console.log(this.controller.gameData.money < this.clickedTower.upgrade_cost);
         if (this.controller.gameData.money < this.clickedTower.upgrade_cost) {
             return;
         }

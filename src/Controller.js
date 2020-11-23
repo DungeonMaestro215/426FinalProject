@@ -18,13 +18,6 @@ export default class Controller {
     mute = false;
 
     constructor(map) {
-        // this.view = view;
-        // this.gameData = new GameData();
-        // this.enemies = [];
-        // this.towers = [];
-        // this.projectiles = [];
-        // this.view.setLives(this.gameData.health);
-        // this.view.setRound(this.gameData.round);
         this.resetGame(new FirstMap());
         
         this.updateQuote();
@@ -95,9 +88,6 @@ export default class Controller {
     async updateGame() {
         if(this.gameData.elapsedTime % 30 == 0) {
             this.view.updateTowerInfo();
-            // console.log("now");
-            // console.log(this.projectiles.length);
-            // this.view.updateQuote();
         }
 
         //spawn enemies
@@ -171,10 +161,6 @@ export default class Controller {
                 const projectile = this.projectiles[i];
                 if (projectile == undefined) continue;
                 if (
-                    // projectile.x >= enemy.x &&
-                    // projectile.x <= enemy.x + enemy.size &&
-                    // projectile.y >= enemy.y &&
-                    // projectile.y <= enemy.y + enemy.size
                     projectile.x <= enemy.x + enemy.size/2 &&
                     projectile.x + projectile.size >= enemy.x - enemy.size/2 &&
                     projectile.y <= enemy.y + enemy.size/2 &&
@@ -182,7 +168,6 @@ export default class Controller {
                 ) {
                     enemy.handleCollision(projectile);
                     enemy.shot_by = projectile.source;
-                    //projectile.has_collided = true;
                     this.projectiles.splice(i,1);
                     i--;
                 }
@@ -202,9 +187,6 @@ export default class Controller {
                     if (tower.remaining_damage <= 0) {
                         this.view.removeTower(tower);
                     }
-                    // if (tower == this.view.clickedTower) {
-                    //     this.view.updateTowerInfo();
-                    // }
                 }
             }
 
@@ -213,7 +195,6 @@ export default class Controller {
                 this.gameData.money += enemy.getReward();
                 this.view.setMoney(this.gameData.money);
                 enemy.shot_by.increaseKills();
-                // this.view.updateTowerInfo();
             } else {
                 enemy.move(this.view.map.enemyPath);
             }
@@ -260,8 +241,6 @@ export default class Controller {
     }
 
     toggleFastForward() {
-        // var audio = document.getElementsByTagName('audio')[0];
-        // audio.play();
         if (!this.mute) {
             let sound = new Audio('../images/zoom.mp3');
             sound.play();
