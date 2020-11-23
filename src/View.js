@@ -1,29 +1,32 @@
-import FirstMap from "./Model/FirstMap.js";
 import MacTower from "./Model/MacTower.js";
 import LinuxTower from "./Model/LinuxTower.js"
 import LogicGateTower from "./Model/LogicGateTower.js";
 import EMPTower from "./Model/EMPTower.js";
-import SecondMap from "./Model/SecondMap.js";
 import WindowsTower from "./Model/WindowsTower.js";
 import BitcoinTower from "./Model/BitcoinTower.js";
 
 export default class View {
     canvas = document.getElementById("canvas");
+    single_use_canvas = document.getElementById("single-use");
     background = document.getElementById("background");
     enemy_canvas = document.getElementById("enemies");
     foreground = document.getElementById("foreground");
     towerplacement_canvas = document.getElementById("towerplacement");
+
     top_canvas = this.towerplacement_canvas;
 
     controller;
     drawing;
     raf;
     clickedTower;
+    map;
     // map = new FirstMap();
-    map = new SecondMap();
+    // map = new SecondMap();
 
-    constructor() {
+    constructor(controller, map) {
         //Create map object and load image to the canvas
+        this.controller = controller;
+        this.map = map;
         this.map.onLoad((img) => {
             const bg_ctx = this.background.getContext("2d");
             bg_ctx.drawImage(img, 0, 0, 500, 500);
@@ -31,7 +34,21 @@ export default class View {
         this.drawing = false;
         this.enemy_ctx = this.enemy_canvas.getContext("2d");
         this.ctx = this.canvas.getContext("2d");
+        this.single_use_ctx = this.single_use_canvas.getContext("2d");
         this.towerplacement_ctx = this.towerplacement_canvas.getContext("2d");
+        this.foreground_ctx = this.foreground.getContext("2d");
+        // Clear all of the canvases:
+        this.enemy_ctx.clearRect(0, 0, this.enemy_canvas.width, this.enemy_canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.single_use_ctx.clearRect(0, 0, this.single_use_canvas.width, this.single_use_canvas.height);
+        this.towerplacement_ctx.clearRect(0, 0, this.towerplacement_canvas.width, this.towerplacement_canvas.height);
+        this.foreground_ctx.clearRect(0, 0, this.foreground.width, this.foreground.height);
+
+        // Clear old UI
+        document.getElementById("towerSidebar").innerHTML = '<p>Create Tower</p>';
+        const ffbutt = document.getElementById("fastForward");
+        ffbutt.style.backgroundColor = 'white';
+        ffbutt.style.color = 'black';
         //Create buttons in the UI for each type of tower
         let towerTypes = [new MacTower(), new LinuxTower(), new WindowsTower(), new EMPTower(), new BitcoinTower, new LogicGateTower()];
         for(const towerType of towerTypes){
@@ -41,9 +58,9 @@ export default class View {
             document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
         }
 
-        // this.towerplacement_canvas.addEventListener('click', (e) => {
-        //     console.log(getCursorPosition(this.towerplacement_canvas, e));
-        // })
+        this.towerplacement_canvas.addEventListener('click', (e) => {
+            console.log(getCursorPosition(this.towerplacement_canvas, e));
+        });
 
         // Allow user to click on placed towers
         this.towerplacement_canvas.addEventListener('click', (e) => {
@@ -64,8 +81,6 @@ export default class View {
             }
         });
 
-        this.updateQuote();
-        setInterval(() => this.updateQuote(), 20000);
     }
 
     setRound(round) {
@@ -177,10 +192,11 @@ export default class View {
 
         // render tower
         let img = new Image();
+        const context = tower.targetType != "single-use" ? this.ctx : this.single_use_ctx;
         img.addEventListener(
             "load",
             () => {
-                this.ctx.drawImage(img, x - this.selectedTower.size / 2, y - this.selectedTower.size / 2, tower.size, tower.size);
+                context.drawImage(img, x - this.selectedTower.size / 2, y - this.selectedTower.size / 2, tower.size, tower.size);
                 // Clear tower placement guide box
                 this.towerplacement_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             },
@@ -229,6 +245,7 @@ export default class View {
         // Is the guide overlapping with a tower?
         const blocked_by_tower = this.controller.towers.reduce((acc, tower) => {
             if (
+                tower.targetType == "single-use" ||
                 x > tower.x + tower.size ||
                 x + this.selectedTower.size < tower.x ||
                 y > tower.y + tower.size ||
@@ -276,13 +293,31 @@ export default class View {
         }
     }
 
+    // Redraw towers on the single-use canvas to fix visual bugs
+    redrawSingleUse() {
+        this.single_use_ctx.clearRect(0, 0, this.single_use_canvas.width, this.single_use_canvas.height);
+        this.controller.towers.forEach(tower => {
+            if (tower.targetType == "single-use") {
+                const img = new Image();
+                img.addEventListener(
+                    "load",
+                    () => {
+                        this.single_use_ctx.drawImage(img, tower.x, tower.y, tower.size, tower.size);
+                    },
+                    false
+                );
+                img.src = tower.sprite;
+            }
+        });
+    }
+
     previousTowerUpdateState = {};
 
     /* Display information about the selected tower.
      * Also include buttons that allow player to upgrade or remove tower.
      */
     updateTowerInfo() {
-        if(this.previousTowerUpdateState.clickedTower === this.clickedTower
+        if (this.previousTowerUpdateState.clickedTower === this.clickedTower
             && this.previousTowerUpdateState.money === this.controller.gameData.money
             && (this.clickedTower == null || this.previousTowerUpdateState.upgrade_cost === this.clickedTower.upgrade_cost)) {
             return;
@@ -316,9 +351,9 @@ export default class View {
             info.append(upgrade_butt);
 
             //create a button for named upgrades if the tower has one and meets required level
-            if(this.clickedTower.special_upgrades.length > 0
-            && this.clickedTower.special_upgrades[0].requiredLevel <= this.clickedTower.level && this.clickedTower.special_upgrades[0].available
-                ) {
+            if (this.clickedTower.special_upgrades.length > 0
+                && this.clickedTower.special_upgrades[0].requiredLevel <= this.clickedTower.level && this.clickedTower.special_upgrades[0].available
+            ) {
                 const special_upgrade = this.clickedTower.special_upgrades[0];
                 const special_upgrade_butt = document.createElement('button')
                 special_upgrade_butt.classList.add('button', 'towerInfoButton');
@@ -328,9 +363,9 @@ export default class View {
                 } else {
                     special_upgrade_butt.classList.add('is-success');
                 }
-                special_upgrade_butt.innerHTML = special_upgrade.name + " <div style='font-size: 9px; max-width: 300px; white-space: pre-wrap'>" + special_upgrade.description +" </div>₿" + special_upgrade.cost
+                special_upgrade_butt.innerHTML = special_upgrade.name + " <div style='font-size: 9px; max-width: 300px; white-space: pre-wrap'>" + special_upgrade.description + " </div>₿" + special_upgrade.cost
                 special_upgrade_butt.addEventListener('click', () => {
-                    if(this.controller.gameData.money >= special_upgrade.cost) {
+                    if (this.controller.gameData.money >= special_upgrade.cost) {
                         this.controller.gameData.money -= special_upgrade.cost;
                         this.clickedTower.applyUpgrade(special_upgrade)
                         this.ctx.clearRect(this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
@@ -338,7 +373,7 @@ export default class View {
                         img.addEventListener(
                             "load",
                             () => {
-                                this.ctx.drawImage(img, this.clickedTower.x,this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
+                                this.ctx.drawImage(img, this.clickedTower.x, this.clickedTower.y, this.clickedTower.size, this.clickedTower.size);
                             },
                             false
                         );
@@ -383,12 +418,20 @@ export default class View {
 
     removeTower(tower) {
         this.controller.towers = this.controller.towers.filter(t => t != tower);
-        this.ctx.clearRect(tower.x, tower.y, tower.size, tower.size);
+        const is_single_use = tower.targetType == "single-use";
+        const context = !is_single_use ? this.ctx : this.single_use_ctx;
+        context.clearRect(tower.x, tower.y, tower.size, tower.size);
+        if (is_single_use) {
+            this.redrawSingleUse();
+        }
     }
 
     initiateLossScreen() {
+<<<<<<< HEAD
         const foreground_ctx = this.foreground.getContext("2d");
         this.foreground.style = "z-index: 99 !important";
+=======
+>>>>>>> gameImprovements
         let start_time = 0;
         let die_raf;
         const die = (timestamp) => {
@@ -401,15 +444,15 @@ export default class View {
             if (o > 0.8) {
                 return;
             }
-            foreground_ctx.clearRect(0, 0, 500, 500);
-            foreground_ctx.fillStyle = "rgba(0,0,0," + o + ")";
-            foreground_ctx.fillRect(0, 0, 500, 500);
-            foreground_ctx.font = o * 66 + "px serif";
-            foreground_ctx.textAlign = "center";
-            foreground_ctx.textBaseline = "middle";
-            foreground_ctx.fillStyle = "rgb(199,10,0)";
+            this.foreground_ctx.clearRect(0, 0, 500, 500);
+            this.foreground_ctx.fillStyle = "rgba(0,0,0," + o + ")";
+            this.foreground_ctx.fillRect(0, 0, 500, 500);
+            this.foreground_ctx.font = o * 66 + "px serif";
+            this.foreground_ctx.textAlign = "center";
+            this.foreground_ctx.textBaseline = "middle";
+            this.foreground_ctx.fillStyle = "rgb(199,10,0)";
             if (o > 0.2) {
-                foreground_ctx.fillText(
+                this.foreground_ctx.fillText(
                     "YOU DIED",
                     this.foreground.width / 2,
                     this.foreground.height / 2
@@ -420,32 +463,6 @@ export default class View {
         window.requestAnimationFrame(die);
     }
 
-    // Quotes
-    getQuotes() {
-        if (!this.quotes) {
-            this.quotes = axios({
-                method: 'get',
-                url: 'https://type.fit/api/quotes'
-            })
-        }
-        return this.quotes;
-    }
-    updateQuote() {
-        const quote_wrapper = document.getElementById("quote-wrapper");
-        const quote_div = document.getElementById("quote");
-        const author_div = document.getElementById("author");
-
-        this.getQuotes().then((quotes) => {
-            const rand = Math.round(Math.random() * quotes.data.length);
-            const quote = quotes.data[rand];
-            quote_div.innerHTML = `<p>${quote.text}</p>`;
-            if (quote.author) {
-                author_div.innerHTML = `<p>-${quote.author}</p>`;
-            } else {
-                author_div.innerHTML = `<p>-Anonymous</p>`;
-            }
-        });
-    }
 }
 
 /*
