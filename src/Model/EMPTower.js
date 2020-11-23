@@ -1,6 +1,9 @@
 import Projectile from "./Projectile.js";
 import Tower from "./Tower.js";
 
+const proj_img = new Image();
+proj_img.src = "../images/lightning.png";
+
 export default class EMPTower extends Tower {
     constructor(x, y) {
         super("../images/teslacoil.png", 'Tesla Coil', x, y, "AOE", 10);
@@ -36,8 +39,7 @@ export default class EMPTower extends Tower {
         }
 
         const proj_size = 25;
-        const proj_img = new Image();
-        proj_img.src = "../images/lightning.png";
+
 
         // Generate one projectile for each direction
         return bullet_vxs.map((vx, idx) => {

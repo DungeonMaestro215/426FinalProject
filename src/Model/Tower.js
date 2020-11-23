@@ -9,6 +9,7 @@ export default class Tower {
     size = 55;
     x;
     y;
+    image_instance;
     targetType;
     bullet_v = 10;
     range = 150;
@@ -20,15 +21,28 @@ export default class Tower {
     special_upgrades = [];
     description = '';
     moneySpent = 0;
-    get_bullet_sprite = () => "../images/bubble.webp";
+    bullet_img = new Image();
+    zero_bullet_img = new Image();
+    one_bullet_img = new Image();
+    zero_purple_bullet_img = new Image();
+    one_purple_bullet_img = new Image();
+
+    get_bullet_image = () => this.bullet_img;
 
     constructor(sprite, name, x, y, targetType, bulletVelocity) {
         this.sprite = sprite;
         this.name = name;
+        this.bullet_img.src = "../images/bubble.webp";
+        this.zero_bullet_img.src = "../images/zero_green.png"
+        this.one_bullet_img.src = "../images/one_green.png"
+        this.zero_purple_bullet_img.src = "../images/zero.png"
+        this.one_purple_bullet_img.src = "../images/one.png"
         this.x = x;
         this.y = y;
         this.targetType = targetType;
         this.bullet_v = bulletVelocity;
+        this.image_instance = new Image();
+        this.image_instance.src = this.sprite;
     }
 
     applyUpgrade(upgrade) {
@@ -83,8 +97,7 @@ export default class Tower {
         let bullet_vx = this.bullet_v * Math.cos(atan) * Math.sign(adx);
         let bullet_vy = this.bullet_v * Math.sin(atan) * Math.sign(adx);
 
-        const proj_img = new Image();
-        proj_img.src = this.get_bullet_sprite();
+        const proj_img = this.get_bullet_image();
         return [new Projectile(proj_img, this.proj_size, this.x + this.size / 2, this.y + this.size / 2, bullet_vx, bullet_vy, this.damage, Number.MAX_SAFE_INTEGER, this)];
     }
 

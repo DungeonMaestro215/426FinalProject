@@ -7,7 +7,7 @@ export default class LinuxTower extends Tower {
         this.cost = 200;
         this.fire_rate = 1;
         this.description = 'Finely dressed penguin ready to DESTROY! Targets the enemy farthest along.';
-        this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
+        this.get_bullet_image = () => Math.random() > 0.66 ? this.one_bullet_img : this.zero_bullet_img;
         this.proj_size=25;
         this.special_upgrades.push({
             name: "Install Gentoo",
@@ -17,7 +17,7 @@ export default class LinuxTower extends Tower {
             available: true,
             effect: () => {
                 if(this.special_upgrades.find(x => x.name==="Install Gentoo").available){
-                    this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one.png" : "../images/zero.png";
+                    this.get_bullet_image = () => Math.random() > 0.66 ? this.one_purple_bullet_img : this.zero_purple_bullet_img;
                     this.sprite = "../images/GentooLinux.png"
                     this.armor_penetration = true;
                     this.special_upgrades.find(x => x.name==="Install Gentoo").available = false;

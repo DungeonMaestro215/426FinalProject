@@ -4,6 +4,8 @@ import Tower from "./Tower.js";
 export default class BitcoinTower extends Tower {
     constructor(x, y) {
         super("../images/bitcoinMiner.png", 'Bitcoin Rig', x, y, "miner", 5);
+        this.bullet_img = new Image();
+        this.bullet_img.src = "../images/bitcoin.png";
         this.range = this.size;
         this.damage = 5;
         this.fire_rate = .1;
@@ -17,8 +19,7 @@ export default class BitcoinTower extends Tower {
         let bullet_vy = -this.bullet_v;
 
         const proj_size = 10;
-        const proj_img = new Image();
-        proj_img.src = "../images/bitcoin.png"; 
+        const proj_img = this.bullet_img;
         return [new Projectile(proj_img, proj_size, this.x + this.size / 2, this.y + this.size / 2,
             bullet_vx, bullet_vy, this.damage / 5, this.range / 2, this)];
     }

@@ -1,5 +1,6 @@
 export default class Enemy {
     sprite;
+    image_instance;
     x;
     y;
     health;
@@ -78,7 +79,6 @@ export default class Enemy {
 
     draw(context) {
         context.drawImage(this.sprite, this.x - this.size/2, this.y - this.size/2, this.size, this.size);
-        
         // Health Bar
         const mapped_health = this.size / this.maxHealth * this.health;
         context.fillStyle = mapped_health > .25 * this.size ? 'rgba(0, 255, 0, .7)' : 'rgba(255, 0, 0, .7)';

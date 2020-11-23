@@ -81,7 +81,7 @@ export default class Controller {
             this.gameData.state = "PAUSED";
             this.view.toggleDraw();
         } else {
-            throw new Error("Unexpected state after round completion");
+           // throw new Error("Unexpected state after round completion");
         }
     }
 

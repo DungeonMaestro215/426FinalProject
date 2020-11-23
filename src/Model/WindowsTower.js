@@ -6,7 +6,7 @@ export default class WindowsTower extends Tower {
         this.range = 200;
         this.fire_rate = 2;
         this.description = 'Mr. Gates would be proud. Targets the closest enemy.';
-        this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
+        this.get_bullet_image = () => Math.random() > 0.66 ? this.one_bullet_img : this.zero_bullet_img;
         this.proj_size=25;
         this.cost = 100;
         this.special_upgrades.push({

@@ -1,9 +1,10 @@
 import Enemy from "./Enemy.js";
 
+let img = new Image();   // Create new img element
+img.src = "./images/Snoeyink.png"; // Set source path
+
 export default class SnoeyinkEnemy extends Enemy {
     constructor(startX, startY, endHandler) {
-        let img = new Image();   // Create new img element
-        img.src = "./images/Snoeyink.png"; // Set source path
         super(img, startX, startY);
         this.addEndCallback(endHandler);
         this.health = 40;

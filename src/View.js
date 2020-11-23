@@ -205,6 +205,8 @@ export default class View {
      * just render the sprite of a tower at an event mouse location
      * to indicate the user is in tower placing state
      */
+
+
     renderTowerPlacementGuide = (e) => {
         this.towerplacement_ctx.clearRect(
             0,
@@ -215,9 +217,11 @@ export default class View {
         let [x, y] = getCursorPosition(this.canvas, e);
 
         const isBlocked = this.isTowerPlacementGuideBlocked(x - this.selectedTower.size / 2, y - this.selectedTower.size / 2);
-
-        const towerImage = new Image();
+        const towerImage = this.selectedTower.image_instance;
+            /*new Image();
         towerImage.src = this.selectedTower.sprite;
+        towerImage.onload = ()=> {
+        }*/
         this.towerplacement_ctx.fillStyle = isBlocked ? 'rgba(255, 0, 0, .5)' : 'rgba(0, 255, 0, .5)';
         this.towerplacement_ctx.beginPath();
         this.towerplacement_ctx.arc(x, y, this.selectedTower.range, 0, 2 * Math.PI, false);
@@ -421,7 +425,7 @@ export default class View {
 
     initiateLossScreen() {
         this.foreground_ctx = this.foreground.getContext("2d");
-        this.foreground.style = "z-index: 99 !important";
+        this.foreground.style = "z-index: 20 !important";
         let start_time = 0;
         let die_raf;
         const die = (timestamp) => {
