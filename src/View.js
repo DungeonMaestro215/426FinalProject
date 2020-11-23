@@ -58,9 +58,9 @@ export default class View {
             document.getElementById(towerType.constructor.name).addEventListener('click', ()=>this.toggleTowerPlacement(towerType));
         }
 
-        this.towerplacement_canvas.addEventListener('click', (e) => {
-            console.log(getCursorPosition(this.towerplacement_canvas, e));
-        });
+        // this.towerplacement_canvas.addEventListener('click', (e) => {
+        //     console.log(getCursorPosition(this.towerplacement_canvas, e));
+        // });
 
         // Allow user to click on placed towers
         this.towerplacement_canvas.addEventListener('click', (e) => {
@@ -427,11 +427,8 @@ export default class View {
     }
 
     initiateLossScreen() {
-<<<<<<< HEAD
-        const foreground_ctx = this.foreground.getContext("2d");
+        this.foreground_ctx = this.foreground.getContext("2d");
         this.foreground.style = "z-index: 99 !important";
-=======
->>>>>>> gameImprovements
         let start_time = 0;
         let die_raf;
         const die = (timestamp) => {

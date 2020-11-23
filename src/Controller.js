@@ -65,7 +65,7 @@ export default class Controller {
         //start drawing and game logic loops
         this.view.toggleDraw();
         await this.updateGame();
-        if (this.gameData.round % 5 === 0 && this.gameData.health !== 0) {
+        if (this.gameData.round !== 0 && this.gameData.round % 5 === 0 && this.gameData.health !== 0) {
             let sound = new Audio('../images/doingood.mp3');
             sound.play();
         } else if (this.gameData.health === 0) {
