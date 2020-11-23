@@ -236,9 +236,9 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
 }
 
 @keyframes moveRight {
-    0% {left: 3%}
-    50% {left: 13%}
-    100% {left: 33%}
+    0% {left: 8%}
+    50% {left: 18%}
+    100% {left: 38%}
 }
 
 @keyframes fade {
@@ -249,9 +249,9 @@ canvas { position: absolute; border-radius: 2%; border: 3px solid #041148;}
 }
 
 @keyframes moveLeft {
-    0% {right: 37%}
-    50% {right: 47%}
-    100% {right: 67%}
+    0% {right: 32%}
+    50% {right: 42%}
+    100% {right: 62%}
 }
 
 /* .fade-in {

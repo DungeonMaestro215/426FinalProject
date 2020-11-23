@@ -7,7 +7,7 @@ export default class MacTower extends Tower {
         this.fire_rate = 2;
         this.cost = 150;
         this.damage = 1;
-        this.description = 'Clearly the worst OS.';
+        this.description = 'Clearly the worst OS. Targets the closest enemy.';
         this.get_bullet_sprite = () => Math.random() > 0.66 ? "../images/one_green.png" : "../images/zero_green.png";
         this.proj_size=25;
         this.special_upgrades.push({
