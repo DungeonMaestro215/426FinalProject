@@ -376,7 +376,9 @@ export default class View {
                             false
                         );
                         img.src = this.clickedTower.sprite;
-
+                        this.setMoney(this.controller.gameData.money);
+                        this.updateTowerInfo();
+                        
                     }
                 });
                 info.append(special_upgrade_butt);

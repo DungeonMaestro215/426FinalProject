@@ -50,7 +50,7 @@ export default class Controller {
         this.gameData.maxEnemies =
             Math.floor((this.gameData.round * this.gameData.round) / 4.4) + 20;
         if(this.gameData.round >= 10) {
-            this.gameData.maxBosses = Math.round(this.gameData.round / 10 * Math.random());
+            this.gameData.maxBosses = Math.round(this.gameData.round / 10 * Math.random()) ** 2;
             this.gameData.maxEnemies *= 1.2 * Math.min(4, this.gameData.round - 9);
             this.gameData.spawnSpeed = Math.min(12,1.4 * (this.gameData.round -9));
         }
