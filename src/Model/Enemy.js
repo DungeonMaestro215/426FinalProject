@@ -19,6 +19,11 @@ export default class Enemy {
         this.y = startY;
     }
 
+    setHealth(health) {
+        this.health = health;
+        this.maxHealth = this.health;
+    }
+
     handleCollision(projectile){
         this.health -= projectile.damage;
     }
