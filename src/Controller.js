@@ -113,7 +113,7 @@ export default class Controller {
                 newEnemy = new MunsellEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             }
             // Increase enemy health as game progresses
-            newEnemy.increaseHealth(15 * Math.floor(this.gameData.round / 10));
+            newEnemy.increaseHealth(10 * Math.floor(this.gameData.round / 10));
             this.enemies.push(newEnemy);
         }
 
