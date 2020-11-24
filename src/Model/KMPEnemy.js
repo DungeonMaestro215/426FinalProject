@@ -12,7 +12,8 @@ export default class KMPEnemy extends Enemy {
     constructor(startX,startY, endHandler) {
         super(kmp_img, startX, startY);
         this.addEndCallback(endHandler);
-        this.setHealth(50);
+        this.health = 50;
+        this.maxHealth = this.health;
         this.reward = 3;
         this.damage = 3;
     }

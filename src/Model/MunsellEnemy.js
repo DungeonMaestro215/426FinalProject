@@ -7,7 +7,8 @@ export default class MunsellEnemy extends Enemy {
     constructor(startX, startY, endHandler) {
         super(img, startX, startY);
         this.addEndCallback(endHandler);
-        this.setHealth(50);
+        this.health = 50;
+        this.maxHealth = this.health;
         this.reward = 5;
         this.damage = 5;
     }

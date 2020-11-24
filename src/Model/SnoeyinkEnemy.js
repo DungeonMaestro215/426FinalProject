@@ -7,7 +7,8 @@ export default class SnoeyinkEnemy extends Enemy {
     constructor(startX, startY, endHandler) {
         super(img, startX, startY);
         this.addEndCallback(endHandler);
-        this.setHealth(40);
+        this.health = 40;
+        this.maxHealth = this.health;
         this.reward = 4;
         this.damage = 4;
     }

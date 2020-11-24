@@ -7,7 +7,8 @@ export default class StottsEnemy extends Enemy {
     constructor(startX, startY, endHandler) {
         super(img, startX, startY);
         this.addEndCallback(endHandler);
-        this.setHealth(20);
+        this.health = 20;
+        this.maxHealth = this.health;
         this.reward = 2;
         this.damage = 2;
     }

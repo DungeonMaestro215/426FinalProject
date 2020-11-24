@@ -16,7 +16,8 @@ export default class BossEnemy extends Enemy {
         }
         super(kmp_imgs, startX, startY);
         this.addEndCallback(endHandler);
-        this.setHealth(1000);
+        this.health = 1000;
+        this.maxHealth = this.health;
         this.size = 100;
         this.reward = 100;
         this.damage = 20;
