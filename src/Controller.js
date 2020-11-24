@@ -113,7 +113,7 @@ export default class Controller {
                 newEnemy = new MunsellEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
             }
             // Increase enemy health as game progresses
-            newEnemy.increaseHealth(25 * Math.floor(this.gameData.round / 10));
+            newEnemy.increaseHealth(15 * Math.floor(this.gameData.round / 10));
             this.enemies.push(newEnemy);
         }
 
@@ -125,7 +125,7 @@ export default class Controller {
         ) {
             this.gameData.enemiesSpawned++;
             const boss = new BossEnemy(startX, startY, (e) => this.enemyReachedEndHandler(e));
-            boss.increaseHealth(25 * Math.floor(this.gameData.round / 10));
+            boss.increaseHealth(100 * Math.floor(this.gameData.round / 10));
             this.enemies.push(boss);
         }
 
